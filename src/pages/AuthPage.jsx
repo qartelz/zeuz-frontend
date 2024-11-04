@@ -1,20 +1,25 @@
 import { useState } from "react";
+import { useDispatch } from 'react-redux';
 import { FaEnvelope, FaLock, FaPhone, FaEye, FaEyeSlash } from "react-icons/fa";
 import AuthSvg from "../assets/svg/AuthSvg";
+import { fetchAuthData } from '../redux/authSlice';
 
 const AuthPage = () => {
 
-  
+  const dispatch = useDispatch();
   const [isLogin, setIsLogin] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  const handleToggle = (type) => {
-    if (type !== isLogin) {
-      setIsLogin(type);
+  
+  const handleLogin = () => {
+    if (isLogin) {
+      dispatch(fetchAuthData({ email, password }));
     }
   };
 
@@ -24,8 +29,7 @@ const AuthPage = () => {
       <div className="flex flex-col -translate-y-24  sm:translate-y-0 justify-center items-center sm:w-1/2 ">
         {/* Login/Sign Up Toggle */}
         <div className="flex text-3xl sm:text-5xl  font-bold space-x-4 mb-12">
-          <button
-            onClick={() => handleToggle(true)}
+        <button onClick={() => setIsLogin(true)}
             className={`px-4 py-2 transition duration-300 ${
               isLogin
                 ? "text-[#248C9A] border-b-2  border-[#248C9A]"
@@ -34,8 +38,7 @@ const AuthPage = () => {
           >
             Login
           </button>
-          <button
-            onClick={() => handleToggle(false)}
+          <button onClick={() => setIsLogin(false)} 
             className={`px-4 py-2 transition duration-300 ${
               !isLogin
                 ? "text-[#248C9A] border-b-2 border-[#248C9A]"
@@ -56,6 +59,8 @@ const AuthPage = () => {
                   type="email"
                   placeholder="Enter email"
                   className="flex-1 outline-none"
+                  value={email}
+              onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
@@ -67,6 +72,8 @@ const AuthPage = () => {
                   type={isPasswordVisible ? "text" : "password"}
                   placeholder="Enter password"
                   className="flex-1 outline-none"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
                   onClick={togglePasswordVisibility}
@@ -86,7 +93,7 @@ const AuthPage = () => {
                 </p>
               </button>
 
-              <button className="bg-[#248C9A] font-bold text-white py-2 rounded-lg hover:bg-[#1c6e7a] transition-colors duration-200">
+              <button onClick={handleLogin} className="bg-[#248C9A] font-bold text-white py-2 rounded-lg hover:bg-[#1c6e7a] transition-colors duration-200">
                 Login
               </button>
             </div>
