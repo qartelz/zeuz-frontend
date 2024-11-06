@@ -1,40 +1,46 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+// src/store/authSlice.js
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
-// Async thunk to fetch authentication data from the backend
-export const fetchAuthData = createAsyncThunk('auth/fetchAuthData', async () => {
-  const response = await axios.get('/api/auth'); // Replace with your actual API endpoint
-  return response.data; // Expecting response structure: { access, refresh, user: { id, email, name } }
-});
+export const login = createAsyncThunk(
+  "auth/login",
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("https: http://127.0.0.1:8000/login/", { email, password });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
 
-// Create a slice for authentication
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState: {
+    user: null,
     access: null,
     refresh: null,
-    user: null,
+    loading: false,
+    error: null,
   },
-  reducers: {
-    logout: (state) => {
-      state.access = null;
-      state.refresh = null;
-      state.user = null;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchAuthData.fulfilled, (state, action) => {
-        state.access = action.payload.access; // Save access token
-        state.refresh = action.payload.refresh; // Save refresh token
-        state.user = action.payload.user; // Save user information
+      .addCase(login.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(fetchAuthData.rejected, (state, action) => {
-        console.error("Failed to fetch authentication data:", action.error.message);
+      .addCase(login.fulfilled, (state, action) => {
+        state.loading = false;
+        state.access = action.payload.access;
+        state.refresh = action.payload.refresh;
+        state.user = action.payload.user;
+      })
+      .addCase(login.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       });
   },
 });
 
-// Export the logout action and the reducer
-export const { logout } = authSlice.actions;
 export default authSlice.reducer;
