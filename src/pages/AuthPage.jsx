@@ -10,13 +10,14 @@ const AuthPage = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  console.log(password)
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
   const handleLogin = () => {
-    dispatch(login({ email, password }));
+    dispatch(login({ email, password}));
   };
  
 
