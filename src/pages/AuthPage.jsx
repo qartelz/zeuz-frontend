@@ -1,27 +1,24 @@
 import { useState } from "react";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../redux/authSlice";
 import { FaEnvelope, FaLock, FaPhone, FaEye, FaEyeSlash } from "react-icons/fa";
 import AuthSvg from "../assets/svg/AuthSvg";
-import { fetchAuthData } from '../redux/authSlice';
 
 const AuthPage = () => {
-
   const dispatch = useDispatch();
   const [isLogin, setIsLogin] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
-  
   const handleLogin = () => {
-    if (isLogin) {
-      dispatch(fetchAuthData({ email, password }));
-    }
+    dispatch(login({ email, password }));
   };
+ 
 
   return (
     <div className="flex h-screen   bg-gray-100 font-poppins">
@@ -93,7 +90,7 @@ const AuthPage = () => {
                 </p>
               </button>
 
-              <button onClick={handleLogin} className="bg-[#248C9A] font-bold text-white py-2 rounded-lg hover:bg-[#1c6e7a] transition-colors duration-200">
+              <button    onClick={handleLogin}  className="bg-[#248C9A] font-bold text-white py-2 rounded-lg hover:bg-[#1c6e7a] transition-colors duration-200">
                 Login
               </button>
             </div>

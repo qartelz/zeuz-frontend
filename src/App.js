@@ -2,18 +2,15 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { fetchAuthData } from './redux/authSlice';
+
 import AuthPage from "./pages/AuthPage";
 import DashboardPage from "./pages/DashboardPage";
 import PracticePage from "./pages/PracticePage";
 import BgSvg from "./assets/svg/Bgsvg";
 
 function App() {
-  const dispatch = useDispatch();
+  
 
-  useEffect(() => {
-    dispatch(fetchAuthData());
-  }, [dispatch]);
 
   return (
     <div className="relative overflow-hidden bg-slate-50">
