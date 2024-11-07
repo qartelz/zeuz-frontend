@@ -13,7 +13,10 @@ const AuthPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { access, error } = useSelector((state) => state.auth);
+  const { access,user_id,name,refresh, error } = useSelector((state) => state.auth);
+  console.log(access,"this is the access")
+  console.log(name,"this is the name")
+
 
 
   useEffect(() => {
