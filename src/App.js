@@ -7,6 +7,8 @@ import AuthPage from "./pages/AuthPage";
 import DashboardPage from "./pages/DashboardPage";
 import PracticePage from "./pages/PracticePage";
 import BgSvg from "./assets/svg/Bgsvg";
+import UserProfile from "./pages/UserProfile";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   
@@ -29,6 +31,8 @@ function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/practice" element={<PracticePage />} />
+            <Route path="/my-profile" element={<UserProfile />} />
+            <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </BrowserRouter>
       </div>
