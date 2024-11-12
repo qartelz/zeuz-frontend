@@ -3,7 +3,6 @@ import React from 'react';
 const AdminPage = () => {
   const callbackUrl = 'https://uat-frontend.enrichmoney.in:3018/partner/login?partner=KE0070'; 
   const handleButtonClick = () => {
- 
     window.location.href = callbackUrl;
   };
 
