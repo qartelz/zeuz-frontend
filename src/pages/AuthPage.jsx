@@ -1,22 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/authSlice";
+import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock, FaPhone, FaEye, FaEyeSlash } from "react-icons/fa";
 import AuthSvg from "../assets/svg/AuthSvg";
 
 const AuthPage = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); 
   const [isLogin, setIsLogin] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const { access,user_id,name,refresh, error } = useSelector((state) => state.auth);
+  console.log(access,"this is the access")
+  console.log(name,"this is the name")
+
+
+
+  useEffect(() => {
+    if (access) {
+      navigate("/");
+    }
+  }, [access, navigate]);
 
   const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
 
   const handleLogin = () => {
-    dispatch(login({ email, password }));
+    dispatch(login({ email, password}));
   };
  
 
@@ -93,6 +107,10 @@ const AuthPage = () => {
               <button    onClick={handleLogin}  className="bg-[#248C9A] font-bold text-white py-2 rounded-lg hover:bg-[#1c6e7a] transition-colors duration-200">
                 Login
               </button>
+
+              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
+
             </div>
           ) : (
             // Sign Up Form

@@ -1,15 +1,19 @@
-// src/store/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+
 
 export const login = createAsyncThunk(
   "auth/login",
   async ({ email, password }, { rejectWithValue }) => {
+    console.log(email,password,"testing please coorperate")
     try {
-      const response = await axios.post("https: http://127.0.0.1:8000/login/", { email, password });
+   
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/account/login/`, { email, password });
+      console.log(response);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      console.error("Error:", error); 
+      return rejectWithValue(error.response?.data || "An unexpected error occurred");
     }
   }
 );
@@ -17,9 +21,11 @@ export const login = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState: {
-    user: null,
+    name: null,
     access: null,
     refresh: null,
+    user_id: null,
+    email: null,
     loading: false,
     error: null,
   },
@@ -34,7 +40,9 @@ const authSlice = createSlice({
         state.loading = false;
         state.access = action.payload.access;
         state.refresh = action.payload.refresh;
-        state.user = action.payload.user;
+        state.name = action.payload.name;
+        state.user_id = action.payload.user_id;
+        state.email = action.payload.email;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
