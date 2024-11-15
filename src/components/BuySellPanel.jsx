@@ -1,59 +1,52 @@
 import React, { useState } from "react";
-import {
-  ChevronDownIcon,
-  MinusIcon,
-  PlusIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronDownIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import BeetleBalance from "./BeetleBalance";
 
-const BuySellPanel = () => {
-  const [selectedStock, setSelectedStock] = useState("Stock 1");
+const BuySellPanel = ({ selectedData }) => {
+  const [selectedOrderType, setSelectedOrderType] = useState("Market Order");
+  const [orderTypes, setOrderTypes] = useState(["Market Order", "Limit Order"]);
+  const [isOrderDropdownOpen, setIsOrderDropdownOpen] = useState(false);
+
   const [isBuy, setIsBuy] = useState(true);
   const [quantity, setQuantity] = useState(0);
 
   return (
     <div className="p-4 bg-transparent rounded-md space-y-4">
       <div className="flex items-center space-x-4 whitespace-nowrap">
-        <BeetleBalance className="" />
+        <BeetleBalance />
       </div>
 
-      {/* Stock Dropdown */}
-      <div className="flex bg-white items-center justify-between text-[#7D7D7D] border shadow-sm p-2 rounded-md">
-        <span>{selectedStock}</span>
-        <ChevronDownIcon
-          className="w-4 h-4 cursor-pointer"
-          onClick={() => {
-        
-          }}
-        />
+      {/* Selected Stock Display */}
+      <div className="bg-white text-[#7D7D7D] border shadow-sm p-2 rounded-md">
+        <span>{selectedData?.name || "No stock selected"}</span>
       </div>
 
+      {/* Buy/Sell Options */}
       <div className="flex items-center justify-between space-x-2">
-  <span className="text-[#7D7D7D] text-xl font-bold">I want to:</span>
-  <div className="flex space-x-2">
-    <button
-      className={`px-8 py-2 rounded-md ${
-        isBuy
-          ? "bg-[#E8FCF1] text-green-500 border font-bold"
-          : "bg-transparent text-[#7D7D7D]"
-      }`}
-      onClick={() => setIsBuy(true)}
-    >
-      Buy
-    </button>
-    <button
-      className={`px-8 py-2 rounded-md ${
-        !isBuy
-          ? "bg-[#E8FCF1] text-red-500 border font-bold"
-          : "bg-transparent text-[#7D7D7D]"
-      }`}
-      onClick={() => setIsBuy(false)}
-    >
-      Sell
-    </button>
-  </div>
-</div>
-
+        <span className="text-[#7D7D7D] text-xl font-bold">I want to:</span>
+        <div className="flex space-x-2">
+          <button
+            className={`px-8 py-2 rounded-md ${
+              isBuy
+                ? "bg-[#E8FCF1] text-green-500 border font-bold"
+                : "bg-transparent text-[#7D7D7D]"
+            }`}
+            onClick={() => setIsBuy(true)}
+          >
+            Buy
+          </button>
+          <button
+            className={`px-8 py-2 rounded-md ${
+              !isBuy
+                ? "bg-[#E8FCF1] text-red-500 border font-bold"
+                : "bg-transparent text-[#7D7D7D]"
+            }`}
+            onClick={() => setIsBuy(false)}
+          >
+            Sell
+          </button>
+        </div>
+      </div>
 
       <div className="space-y-2">
         {/* Quantity */}
@@ -80,14 +73,30 @@ const BuySellPanel = () => {
         />
 
         {/* Order Type Dropdown */}
-        <div className="flex items-center justify-between bg-white text-[#7D7D7D] border p-2 rounded-md">
-          <span>Order Type</span>
-          <ChevronDownIcon
-            className="w-4 h-4 cursor-pointer"
-            onClick={() => {
-              /* toggle dropdown */
-            }}
-          />
+        <div className="relative">
+          <div
+            className="flex items-center justify-between bg-white text-[#7D7D7D] border p-2 rounded-md cursor-pointer"
+            onClick={() => setIsOrderDropdownOpen(!isOrderDropdownOpen)}
+          >
+            <span>{selectedOrderType}</span>
+            <ChevronDownIcon className="w-4 h-4" />
+          </div>
+          {isOrderDropdownOpen && (
+            <div className="absolute z-10 mt-2 w-full bg-white border rounded-md shadow-md">
+              {orderTypes.map((type, index) => (
+                <div
+                  key={index}
+                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                  onClick={() => {
+                    setSelectedOrderType(type);
+                    setIsOrderDropdownOpen(false);
+                  }}
+                >
+                  {type}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

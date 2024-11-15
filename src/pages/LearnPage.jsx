@@ -1,7 +1,7 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom"; 
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import Navbar from "../components/Navbar";
-import CoinSvg from "../assets/svg/CoinSvg";
 import SearchBar from "../components/SearchBar";
 import TradingViewWidget from "../components/TradingViewWidget";
 import StockInfo from "../components/StockInfo";
@@ -9,8 +9,12 @@ import BuySellPanel from "../components/BuySellPanel";
 import BeetleBalance from "../components/BeetleBalance";
 
 const LearnPage = () => {
+  const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [selectedData, setSelectedData] = useState(null);
+
+  const { heading } = location.state || {};
 
   const stocks = [
     { name: "Apple Inc.", price: 150 },
@@ -29,23 +33,31 @@ const LearnPage = () => {
   const handleChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
+
+    // Reset selected data if user starts a new search
+    if (selectedData) setSelectedData(null);
+
     handleSearch(query);
   };
 
+  const handleSelectStock = (stock) => {
+    setSelectedData(stock); // Set the selected stock
+    setSearchQuery(""); // Clear the search input
+    setResults([]); // Clear the search results
+  };
+
   return (
-    <div className="p-4 text-gray-800 ">
+    <div className="p-4 text-gray-800 min-h-screen">
       <Navbar />
 
       <div className="flex items-center gap-2 p-10">
         <span>Practice</span>
         <ChevronRightIcon className="h-4 w-4" />
-        <span className="font-bold text-[#026E78]">Learn Equity</span>
+        <span className="font-bold text-[#026E78]">{heading}</span>
       </div>
 
       <div className="flex flex-col items-center mt-12">
-
-
-       <BeetleBalance/>
+      {!selectedData && <BeetleBalance />}
 
         <SearchBar
           searchQuery={searchQuery}
@@ -53,49 +65,62 @@ const LearnPage = () => {
           handleSearch={handleSearch}
         />
 
-        <p className="mt-4 text-center text-sm text-gray-500">
-          or change{" "}
-          <a className="text-black" href="/practice">
-            <strong>
-              <u>Trade Type</u>
-            </strong>
-          </a>
-        </p>
-
-        {searchQuery && results.length > 0 && (
-          <div className="mt-6 text-center">
-            <p className="text-xl font-semibold mb-4">
-              {results.length} results found for "{searchQuery}"
+      
+            <p className="mt-4 text-center text-sm text-gray-500">
+              or change{" "}
+              <a className="text-black" href="/practice">
+                <strong>
+                  <u>Trade Type</u>
+                </strong>
+              </a>
             </p>
-            <div className="grid grid-cols-2 gap-4">
-              {results.map((stock, index) => (
-                <div key={index} className="p-4 bg-white shadow rounded-lg">
-                  <div className="text-lg font-bold">{stock.name}</div>
-                  <div className="text-gray-600">Price: ${stock.price}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+            {!selectedData && (
+          <>
 
-        {searchQuery && results.length === 0 && (
-          <div className="mt-6 text-center text-gray-600">
-            No results found for "{searchQuery}"
-          </div>
+            {searchQuery && results.length > 0 && (
+              <div className="mt-6 text-center">
+                <p className="text-xl font-semibold mb-4">
+                  {results.length} results found for "{searchQuery}"
+                </p>
+                <div className="grid grid-cols-2 gap-4">
+                  {results.map((stock, index) => (
+                    <div
+                      key={index}
+                      className="p-4 bg-white shadow rounded-lg cursor-pointer"
+                      onClick={() => handleSelectStock(stock)} // Pass selected stock
+                    >
+                      <div className="text-lg font-bold">{stock.name}</div>
+                      <div className="text-gray-600">Price: ${stock.price}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {searchQuery && results.length === 0 && (
+              <div className="mt-6 text-center text-gray-600">
+                No results found for "{searchQuery}"
+              </div>
+            )}
+          </>
         )}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-6 p-6">
-  <div className="space-y-6">
-    <StockInfo />
-    <TradingViewWidget />
-  </div>
+      {selectedData && !searchQuery && (
+        <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-6 p-6">
+          <div className="space-y-6">
+            <StockInfo 
+              selectedData={selectedData}
+              stocks={stocks} 
+            />
+            <TradingViewWidget />
+          </div>
 
-  <div>
-    <BuySellPanel />
-  </div>
-</div>
-
+          <div>
+            <BuySellPanel selectedData={selectedData} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
