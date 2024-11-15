@@ -13,7 +13,7 @@ const DashboardPage = () => {
 
   
   return (
-    <div className='h-screen'>
+    <div >
         <Navbar/>
         <HeroSection
         username={name}

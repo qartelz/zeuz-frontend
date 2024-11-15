@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import {
-  ChevronRightIcon,
-  PlusIcon,
-} from "@heroicons/react/24/outline";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import Navbar from "../components/Navbar";
 import CoinSvg from "../assets/svg/CoinSvg";
 import SearchBar from "../components/SearchBar";
 import TradingViewWidget from "../components/TradingViewWidget";
+import StockInfo from "../components/StockInfo";
+import BuySellPanel from "../components/BuySellPanel";
+import BeetleBalance from "../components/BeetleBalance";
 
 const LearnPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,10 +33,9 @@ const LearnPage = () => {
   };
 
   return (
-    <div className="p-4 text-gray-800 h-screen">
+    <div className="p-4 text-gray-800 ">
       <Navbar />
 
-      <TradingViewWidget/>
       <div className="flex items-center gap-2 p-10">
         <span>Practice</span>
         <ChevronRightIcon className="h-4 w-4" />
@@ -44,28 +43,10 @@ const LearnPage = () => {
       </div>
 
       <div className="flex flex-col items-center mt-12">
-        <div className="flex items-center justify-between p-6 w-full max-w-md">
-          <div className="bg-gray-200 rounded-full h-20 w-20 flex items-center justify-center">
-            <CoinSvg />
-          </div>
 
-          <div className="ml-4">
-            <div className="text-4xl text-[#BF9900] font-extrabold">
-              Beetle Balance
-            </div>
-            <div className="text-4xl flex items-center font-extrabold">
-              1000
-              <div className="flex items-end">
-                <div className="text-xl font-medium mt-2 ml-2">/ 5000</div>
-              </div>
-              <div className="flex items-center">
-                <PlusIcon className="h-6 w-6 text-blue-500 ml-2" />
-              </div>
-            </div>
-          </div>
-        </div>
 
-      
+       <BeetleBalance/>
+
         <SearchBar
           searchQuery={searchQuery}
           handleChange={handleChange}
@@ -73,7 +54,12 @@ const LearnPage = () => {
         />
 
         <p className="mt-4 text-center text-sm text-gray-500">
-          or change <a className="text-black" href="/practice"><strong><u>Trade Type</u></strong></a>
+          or change{" "}
+          <a className="text-black" href="/practice">
+            <strong>
+              <u>Trade Type</u>
+            </strong>
+          </a>
         </p>
 
         {searchQuery && results.length > 0 && (
@@ -97,9 +83,19 @@ const LearnPage = () => {
             No results found for "{searchQuery}"
           </div>
         )}
-
-       
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-6 p-6">
+  <div className="space-y-6">
+    <StockInfo />
+    <TradingViewWidget />
+  </div>
+
+  <div>
+    <BuySellPanel />
+  </div>
+</div>
+
     </div>
   );
 };

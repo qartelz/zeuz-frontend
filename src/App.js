@@ -7,6 +7,7 @@ import BgSvg from "./assets/svg/Bgsvg";
 import UserProfile from "./pages/UserProfile";
 import AdminPage from "./pages/AdminPage";
 import LearnPage from "./pages/LearnPage";
+import AdminLogin from "./pages/AdminLogin";
 
 function App() {
   return (  
@@ -25,7 +26,9 @@ function App() {
             <Route path="/practice" element={<PracticePage />} />
             <Route path="/practice/learn" element={<LearnPage />} />
             <Route path="/my-profile" element={<UserProfile />} />
-            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/admin/token" element={<AdminPage />} />
+            <Route path="/admin" element={<AdminLogin />} />
+
           </Routes>
         </BrowserRouter>
       </div>
