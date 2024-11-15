@@ -1,22 +1,19 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
-// import { useState } from "react";
-// import PracticeSvg from '../assets/svg/PracticeSvg'
 
 const PracticePage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
   const [modalContent, setModalContent] = useState({
     title: "",
     content: "",
     buttonColor: "",
     buttonText: "",
-    contentLast:""
+    contentLast: "",
   });
-  const openModal = (title, content, buttonColor, buttonText,contentLast) => {
-    setModalContent({ title, content, buttonColor, buttonText,contentLast });
+  const openModal = (title, content, buttonColor, buttonText, contentLast) => {
+    setModalContent({ title, content, buttonColor, buttonText, contentLast });
     setIsModalOpen(true);
   };
 
@@ -24,7 +21,7 @@ const PracticePage = () => {
     <div className="h-screen">
       <Navbar />
       <div className="flex flex-row h-screen items-center justify-between">
-        {/* Left Section */}
+ 
         <div className="flex flex-col justify-end space-y-4 w-1/2 p-8">
           <h1 className="text-4xl font-bold">Start a New Trade</h1>
           <h2 className="text-xl text-gray-700">
@@ -33,15 +30,13 @@ const PracticePage = () => {
 
           <div className="flex space-x-4 mt-4">
             <button
-              // onClick={openModal}
               onClick={() =>
                 openModal(
                   "Equity Trading: Build Ownership",
                   "Equity trading is all about buying and selling shares of companies. It's a great way to learn how to evaluate companies and understand how your investments grow.",
                   " bg-blue-500",
                   "Start Equity Trading",
-                  "Ready to get started?",
-                  
+                  "Ready to get started?"
                 )
               }
               className="px-4 py-2 bg-blue-500 text-white rounded-lg w-[150px] h-[50px] sm:w-[180px] sm:h-[55px] md:w-[200px] md:h-[60px] lg:w-[220px] lg:h-[65px]"
@@ -50,7 +45,6 @@ const PracticePage = () => {
             </button>
 
             <button
-              // onClick={openModal}
               onClick={() =>
                 openModal(
                   "Futures Trading: Predict the Future",
@@ -66,7 +60,7 @@ const PracticePage = () => {
             </button>
 
             <button
-              // onClick={openModal}
+            
               onClick={() =>
                 openModal(
                   "Options Trading: Flexible Contracts",
@@ -83,15 +77,12 @@ const PracticePage = () => {
           </div>
         </div>
 
-        {/* Right SVG Section */}
+      
         <div className="w-1/2 h-[70vh] flex items-center justify-center">
-          {/* <PracticeSvg/> */}
+         
         </div>
       </div>
-      {/* Modal */}
-      {/* Modal */}
-
-      {/* Modal */}
+     
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm z-50">
           <div className="bg-white rounded-lg w-[90%] max-w-[400px] h-auto md:h-[522px] p-4 md:p-6 flex flex-col">
@@ -109,9 +100,8 @@ const PracticePage = () => {
               <p className="text-gray-700 mb-4">{modalContent.contentLast}</p>
             </div>
 
-            {/* Close Button */}
+            {/* Button */}
             <button
-              // onClick={closeModal}
               className={`px-4 py-2 text-white rounded-lg ${modalContent.buttonColor} mt-4`}
             >
               {modalContent.buttonText}
