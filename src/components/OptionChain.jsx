@@ -1,60 +1,165 @@
-import React, { useState } from "react";
+import React from 'react';
 
-const OptionChain = () => {
-  const [selectedStrike, setSelectedStrike] = useState(null);
-
+const OptionsData = () => {
   const data = [
-    { call: 50, strike: 100, put: 40 },
-    { call: 60, strike: 110, put: 30 },
-    { call: 70, strike: 120, put: 20 },
-    { call: 80, strike: 130, put: 10 },
+    {
+      strike: "21,800.00",
+      calls: {
+        oi: "-",
+        changeInOi: "-",
+        volume: "-",
+        iv: "-",
+        ltp: "-",
+        change: "-",
+        bidQty: "1,000",
+        bid: "1,582.35",
+        ask: "1,874.95",
+        askQty: "1,000",
+      },
+      puts: {
+        oi: "73,481",
+        changeInOi: "73,481",
+        volume: "43.50",
+        iv: "0.05",
+        ltp: "-0.80",
+        change: "0.05",
+        bidQty: "3,98,175",
+        bid: "21,81,911",
+        ask: "-",
+        askQty: "-",
+      },
+    },
+    {
+      strike: "21,850.00",
+      calls: {
+        oi: "-",
+        changeInOi: "-",
+        volume: "-",
+        iv: "-",
+        ltp: "-",
+        change: "-",
+        bidQty: "1,000",
+        bid: "1,536.30",
+        ask: "1,824.80",
+        askQty: "1,000",
+      },
+      puts: {
+        oi: "7,891",
+        changeInOi: "7,891",
+        volume: "42.29",
+        iv: "0.05",
+        ltp: "-0.95",
+        change: "0.05",
+        bidQty: "72,300",
+        bid: "5,40,410",
+        ask: "-",
+        askQty: "-",
+      },
+      puts: {
+        oi: "7,891",
+        changeInOi: "7,891",
+        volume: "42.29",
+        iv: "0.05",
+        ltp: "-0.95",
+        change: "0.05",
+        bidQty: "72,300",
+        bid: "5,40,410",
+        ask: "-",
+        askQty: "-",
+      },
+      puts: {
+        oi: "7,891",
+        changeInOi: "7,891",
+        volume: "42.29",
+        iv: "0.05",
+        ltp: "-0.95",
+        change: "0.05",
+        bidQty: "72,300",
+        bid: "5,40,410",
+        ask: "-",
+        askQty: "-",
+      },
+      puts: {
+        oi: "7,891",
+        changeInOi: "7,891",
+        volume: "42.29",
+        iv: "0.05",
+        ltp: "-0.95",
+        change: "0.05",
+        bidQty: "72,300",
+        bid: "5,40,410",
+        ask: "-",
+        askQty: "-",
+      },
+      puts: {
+        oi: "7,891",
+        changeInOi: "7,891",
+        volume: "42.29",
+        iv: "0.05",
+        ltp: "-0.95",
+        change: "0.05",
+        bidQty: "72,300",
+        bid: "5,40,410",
+        ask: "-",
+        askQty: "-",
+      },
+      
+    },
+    // Add more rows as needed...
   ];
 
-  const handleStrikeClick = (strike) => {
-    setSelectedStrike(strike);
-  };
-
   return (
-    <div className="flex justify-center mt-10">
-      <table className="table-auto border-collapse border border-gray-400">
-        <thead>
-          <tr>
-            <th className="border border-gray-400 px-4 py-2">Call</th>
-            <th className="border border-gray-400 px-4 py-2">Strike</th>
-            <th className="border border-gray-400 px-4 py-2">Put</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row, index) => (
-            <tr key={index}>
-              <td
-                className={`border border-gray-400 px-4 py-2 ${
-                  selectedStrike === row.strike ? "bg-yellow-200" : ""
-                }`}
-              >
-                {row.call}
-              </td>
-              <td
-                className={`border border-gray-400 px-4 py-2 ${
-                  selectedStrike === row.strike ? "bg-yellow-200" : ""
-                }`}
-                onClick={() => handleStrikeClick(row.strike)}
-              >
-                {row.strike}
-              </td>
-              <td
-                className={`border border-gray-400 px-4 py-2 ${
-                  selectedStrike === row.strike ? "bg-yellow-200" : ""
-                }`}
-              >
-                {row.put}
-              </td>
+    <div className="p-4">
+      <h2 className="text-2xl font-bold mb-4">Options Data</h2>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm text-left text-gray-500 border border-gray-300">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-100 border-b border-gray-300">
+            <tr>
+              <th className="px-4 py-2">Strike</th>
+              <th colSpan="9" className="px-4 py-2 text-center">Calls</th>
+              <th colSpan="9" className="px-4 py-2 text-center">Puts</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+            <tr>
+              <th className="px-4 py-2"></th>
+              {["OI", "Chng in OI", "Volume", "IV", "LTP", "Chng", "Bid Qty", "Bid", "Ask", "Ask Qty"].map((header, index) => (
+                <th key={`calls-header-${index}`} className="px-4 py-2">{header}</th>
+              ))}
+              {["Bid Qty", "Bid", "Ask", "Ask Qty", "Chng", "LTP", "IV", "Volume", "Chng in OI", "OI"].map((header, index) => (
+                <th key={`puts-header-${index}`} className="px-4 py-2">{header}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((row, index) => (
+              <tr key={index} className="border-b hover:bg-gray-50">
+                <td className="px-4 py-2 font-medium text-gray-900">{row.strike}</td>
+                <td className="px-4 py-2">{row.calls.oi}</td>
+                <td className="px-4 py-2">{row.calls.changeInOi}</td>
+                <td className="px-4 py-2">{row.calls.volume}</td>
+                <td className="px-4 py-2">{row.calls.iv}</td>
+                <td className="px-4 py-2">{row.calls.ltp}</td>
+                <td className="px-4 py-2">{row.calls.change}</td>
+                <td className="px-4 py-2">{row.calls.bidQty}</td>
+                <td className="px-4 py-2">{row.calls.bid}</td>
+                <td className="px-4 py-2">{row.calls.ask}</td>
+                <td className="px-4 py-2">{row.calls.askQty}</td>
+                <td className="px-4 py-2">{row.puts.bidQty}</td>
+                <td className="px-4 py-2">{row.puts.bid}</td>
+                <td className="px-4 py-2">{row.puts.ask}</td>
+                <td className="px-4 py-2">{row.puts.askQty}</td>
+                <td className="px-4 py-2">{row.puts.change}</td>
+                <td className="px-4 py-2">{row.puts.ltp}</td>
+                <td className="px-4 py-2">{row.puts.iv}</td>
+                <td className="px-4 py-2">{row.puts.volume}</td>
+                <td className="px-4 py-2">{row.puts.changeInOi}</td>
+                <td className="px-4 py-2">{row.puts.oi}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
-export default OptionChain;
+export default OptionsData;
