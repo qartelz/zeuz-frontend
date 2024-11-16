@@ -10,6 +10,46 @@ import BeetleBalance from "../components/BeetleBalance";
 import OptionChain from "../components/OptionChain";
 
 const LearnPage = () => {
+
+  const optionData = [
+    {
+      strike: 1500,
+      call: {
+        OI: 1200,
+        OIChange: 50,
+        volume: 500,
+        LTP: 10.5,
+        bgColor: 'bg-green-200', // dynamic background color
+      },
+      put: {
+        OI: 1100,
+        OIChange: 30,
+        volume: 450,
+        LTP: 8.4,
+        bgColor: 'bg-red-200', // dynamic background color
+      },
+    },
+    {
+      strike: 1600,
+      call: {
+        OI: 1300,
+        OIChange: -20,
+        volume: 400,
+        LTP: 12.3,
+        bgColor: 'bg-green-300',
+      },
+      put: {
+        OI: 1150,
+        OIChange: 10,
+        volume: 460,
+        LTP: 7.9,
+        bgColor: 'bg-red-300',
+      },
+    },
+    // Add more rows as needed
+  ];
+
+
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   
@@ -162,10 +202,10 @@ const LearnPage = () => {
         </div>
       )}
 
-      {selectedData && !searchQuery && heading === "Options Trading" && (
+      { heading === "Options Trading" && (
         <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-6 p-6">
           <div className="space-y-6">
-            <OptionChain heading={heading} />
+            <OptionChain  data={optionData} heading={heading} />
           </div>
           <div>
             <BuySellPanel selectedData={selectedData} />
