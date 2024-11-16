@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
-const StockInfo = ({ selectedData, stocks }) => {
+const StockInfo = ({ selectedData, stocks,result }) => {
   const [selectedStock, setSelectedStock] = useState("");
   const [selectedMarket, setSelectedMarket] = useState("All Markets");
   const [showStockDropdown, setShowStockDropdown] = useState(false);
@@ -51,7 +51,7 @@ const StockInfo = ({ selectedData, stocks }) => {
           className="flex items-center space-x-2 cursor-pointer whitespace-nowrap"
           onClick={() => setShowStockDropdown(!showStockDropdown)}
         >
-          <span className=" font-bold">{selectedStock}</span>
+          <span className=" font-bold">{selectedData.display_name}</span>
           {/* <ChevronDownIcon className="w-4 h-4" /> */}
         </div>
 

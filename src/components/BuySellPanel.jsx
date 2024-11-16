@@ -8,7 +8,7 @@ const BuySellPanel = ({ selectedData }) => {
   const [isOrderDropdownOpen, setIsOrderDropdownOpen] = useState(false);
 
   const [isBuy, setIsBuy] = useState(true);
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(selectedData.lot_size);
 
   return (
     <div className="p-4 bg-transparent rounded-md space-y-4">
@@ -18,7 +18,7 @@ const BuySellPanel = ({ selectedData }) => {
 
       {/* Selected Stock Display */}
       <div className="bg-white text-[#7D7D7D] border shadow-sm p-2 rounded-md">
-        <span>{selectedData?.name || "No stock selected"}</span>
+        <span>{selectedData?.display_name || "No stock selected"}</span>
       </div>
 
       {/* Buy/Sell Options */}

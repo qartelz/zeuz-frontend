@@ -7,17 +7,15 @@ import AuthSvg from "../assets/svg/AuthSvg";
 
 const AuthPage = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { access,user_id,name,refresh, error } = useSelector((state) => state.auth);
-  console.log(access,"this is the access")
-  console.log(name,"this is the name")
-
-
+  const { access, user_id, name, refresh, error } = useSelector(
+    (state) => state.auth
+  );
 
   useEffect(() => {
     if (access) {
@@ -30,26 +28,31 @@ const AuthPage = () => {
   };
 
   const handleLogin = () => {
-    dispatch(login({ email, password}));
+    
+    
+
+    // Dispatch the login action
+    dispatch(login({ email, password }));
   };
- 
 
   return (
-    <div className="flex h-screen   bg-gray-100 font-poppins">
+    <div className="flex h-screen bg-gray-100 font-poppins">
       {/* Left Side */}
-      <div className="flex flex-col -translate-y-24  sm:translate-y-0 justify-center items-center sm:w-1/2 ">
+      <div className="flex flex-col -translate-y-24 sm:translate-y-0 justify-center items-center sm:w-1/2">
         {/* Login/Sign Up Toggle */}
-        <div className="flex text-3xl sm:text-5xl  font-bold space-x-4 mb-12">
-        <button onClick={() => setIsLogin(true)}
+        <div className="flex text-3xl sm:text-5xl font-bold space-x-4 mb-12">
+          <button
+            onClick={() => setIsLogin(true)}
             className={`px-4 py-2 transition duration-300 ${
               isLogin
-                ? "text-[#248C9A] border-b-2  border-[#248C9A]"
+                ? "text-[#248C9A] border-b-2 border-[#248C9A]"
                 : "text-gray-700"
             }`}
           >
             Login
           </button>
-          <button onClick={() => setIsLogin(false)} 
+          <button
+            onClick={() => setIsLogin(false)}
             className={`px-4 py-2 transition duration-300 ${
               !isLogin
                 ? "text-[#248C9A] border-b-2 border-[#248C9A]"
@@ -60,7 +63,7 @@ const AuthPage = () => {
           </button>
         </div>
 
-        <div className="flex  flex-col   min-h-[300px] ">
+        <div className="flex flex-col min-h-[300px]">
           {/* Login Form */}
           {isLogin ? (
             <div className="flex flex-col space-y-4 px-4">
@@ -71,12 +74,12 @@ const AuthPage = () => {
                   placeholder="Enter email"
                   className="flex-1 outline-none"
                   value={email}
-              onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
 
               <div
-                className={`flex items-center bg-white border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4 transform transition-transform duration-500 `}
+                className={`flex items-center bg-white border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4`}
               >
                 <FaLock className="text-[#248C9A] mr-2" />
                 <input
@@ -104,18 +107,19 @@ const AuthPage = () => {
                 </p>
               </button>
 
-              <button    onClick={handleLogin}  className="bg-[#248C9A] font-bold text-white py-2 rounded-lg hover:bg-[#1c6e7a] transition-colors duration-200">
+              <button
+                onClick={handleLogin}
+                className="bg-[#248C9A] font-bold text-white py-2 rounded-lg hover:bg-[#1c6e7a] transition-colors duration-200"
+              >
                 Login
               </button>
 
               {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-
-
             </div>
           ) : (
             // Sign Up Form
             <div className="flex flex-col space-y-4 px-4">
-              <div className="flex bg-white items-center border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4 ">
+              <div className="flex bg-white items-center border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4">
                 <FaEnvelope className="text-[#248C9A] mr-2" />
                 <input
                   type="email"
@@ -125,11 +129,7 @@ const AuthPage = () => {
               </div>
 
               <div
-                className={`flex items-center bg-white border w-[400px]  rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4 transform transition-transform duration-500 ${
-                  !isLogin
-                    ? "translate-y-28 sm:translate-y-14"
-                    : "translate-y-0"
-                }`}
+                className={`flex items-center bg-white border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4`}
               >
                 <FaLock className="text-[#248C9A] mr-2" />
                 <input
@@ -149,7 +149,7 @@ const AuthPage = () => {
                 </button>
               </div>
 
-              <div className="flex bg-white items-center border w-[400px] rounded-[15px] sm:rounded-[50px] -translate-y-14 transform transition-transform duration-700 py-4 sm:py-2 px-4">
+              <div className="flex bg-white items-center border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4">
                 <FaPhone className="text-[#248C9A] mr-2" />
                 <input
                   type="tel"
@@ -158,7 +158,7 @@ const AuthPage = () => {
                 />
               </div>
 
-              <button className="bg-[#248C9A] font-bold text-white py-2 rounded-lg mt-0  hover:bg-[#1c6e7a] transition-colors translate-y-20 sm:translate-y-0 duration-200">
+              <button className="bg-[#248C9A] font-bold text-white py-2 rounded-lg hover:bg-[#1c6e7a] transition-colors duration-200">
                 Create Account
               </button>
             </div>

@@ -12,7 +12,9 @@ import OptionChain from "../components/OptionChain";
 const LearnPage = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  
   const [results, setResults] = useState([]);
+  console.log(results)
   const [selectedData, setSelectedData] = useState(null);
 
   const { heading } = location.state || {};
@@ -81,7 +83,9 @@ const LearnPage = () => {
 
   const filteredStocks = stocks.filter((stock) =>
     stock.display_name.toLowerCase().includes(searchQuery.toLowerCase())
+  
   );
+  // console.log(filteredStocks)
 
   return (
     <div className="p-4 text-gray-800 min-h-screen">
@@ -101,6 +105,9 @@ const LearnPage = () => {
           handleChange={handleChange}
           handleSearch={handleSearch}
         />
+
+
+        
 
         <p className="mt-4 text-center text-sm text-gray-500">
           or change{" "}
@@ -145,7 +152,7 @@ const LearnPage = () => {
       {selectedData && !searchQuery && heading !== "Options Trading" && (
         <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-6 p-6">
           <div className="space-y-6">
-            <StockInfo selectedData={selectedData} stocks={stocks} />
+            <StockInfo selectedData={selectedData} stocks={stocks} results={results} />
             <TradingViewWidget />
           </div>
 
