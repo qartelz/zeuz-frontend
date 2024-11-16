@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom"; 
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import Navbar from "../components/Navbar";
 import SearchBar from "../components/SearchBar";
@@ -7,6 +7,7 @@ import TradingViewWidget from "../components/TradingViewWidget";
 import StockInfo from "../components/StockInfo";
 import BuySellPanel from "../components/BuySellPanel";
 import BeetleBalance from "../components/BeetleBalance";
+import OptionChain from "../components/OptionChain";
 
 const LearnPage = () => {
   const location = useLocation();
@@ -16,12 +17,36 @@ const LearnPage = () => {
 
   const { heading } = location.state || {};
 
-  const stocks = [
-    { name: "Apple Inc.", price: 150 },
-    { name: "Apple Services", price: 120 },
-    { name: "Apple Devices", price: 180 },
-    { name: "Microsoft Corp.", price: 250 },
-  ];
+  const [stocks, setStocks] = useState([]);
+
+  useEffect(() => {
+    // Function to determine the API endpoint based on the heading
+    const getApiEndpoint = () => {
+      if (heading === "Equity Trading") {
+        return "http://127.0.0.1:8000/instrument/search/?exchange=NSE";
+      } else if (heading === "Futures Trading") {
+        return "http://127.0.0.1:8000/instrument/search/?exchange=NFO&segment=FUT";
+      }
+      // Add more conditions here if needed for other headings
+      return null;
+    };
+
+    const fetchStocks = async () => {
+      try {
+        const endpoint = getApiEndpoint();
+        if (!endpoint) return; // Exit if no API endpoint is determined
+
+        const response = await fetch(endpoint);
+        const data = await response.json(); // assuming the backend returns a JSON array
+        setStocks(data); // update the state with the fetched data
+      } catch (error) {
+        console.error("Error fetching stocks:", error);
+      }
+    };
+
+    // Fetch data when the component mounts or when the heading changes
+    fetchStocks();
+  }, [heading]); // Dependency array includes heading
 
   const handleSearch = (query) => {
     const filteredResults = stocks.filter((stock) =>
@@ -46,6 +71,10 @@ const LearnPage = () => {
     setResults([]); // Clear the search results
   };
 
+  const filteredStocks = stocks.filter((stock) =>
+    stock.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="p-4 text-gray-800 min-h-screen">
       <Navbar />
@@ -57,7 +86,7 @@ const LearnPage = () => {
       </div>
 
       <div className="flex flex-col items-center mt-12">
-      {!selectedData && <BeetleBalance />}
+        {!selectedData && <BeetleBalance />}
 
         <SearchBar
           searchQuery={searchQuery}
@@ -65,18 +94,17 @@ const LearnPage = () => {
           handleSearch={handleSearch}
         />
 
-      
-            <p className="mt-4 text-center text-sm text-gray-500">
-              or change{" "}
-              <a className="text-black" href="/practice">
-                <strong>
-                  <u>Trade Type</u>
-                </strong>
-              </a>
-            </p>
-            {!selectedData && (
-          <>
+        <p className="mt-4 text-center text-sm text-gray-500">
+          or change{" "}
+          <a className="text-black" href="/practice">
+            <strong>
+              <u>Trade Type</u>
+            </strong>
+          </a>
+        </p>
 
+        {!selectedData && (
+          <>
             {searchQuery && results.length > 0 && (
               <div className="mt-6 text-center">
                 <p className="text-xl font-semibold mb-4">
@@ -87,7 +115,7 @@ const LearnPage = () => {
                     <div
                       key={index}
                       className="p-4 bg-white shadow rounded-lg cursor-pointer"
-                      onClick={() => handleSelectStock(stock)} // Pass selected stock
+                      onClick={() => handleSelectStock(stock)}
                     >
                       <div className="text-lg font-bold">{stock.name}</div>
                       <div className="text-gray-600">Price: ${stock.price}</div>
@@ -106,16 +134,24 @@ const LearnPage = () => {
         )}
       </div>
 
-      {selectedData && !searchQuery && (
+      {selectedData && !searchQuery && heading !== "Options Trading" && (
         <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-6 p-6">
           <div className="space-y-6">
-            <StockInfo 
-              selectedData={selectedData}
-              stocks={stocks} 
-            />
+            <StockInfo selectedData={selectedData} stocks={stocks} />
             <TradingViewWidget />
           </div>
 
+          <div>
+            <BuySellPanel selectedData={selectedData} />
+          </div>
+        </div>
+      )}
+
+      {selectedData && !searchQuery && heading === "Options Trading" && (
+        <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-6 p-6">
+          <div className="space-y-6">
+            <OptionChain heading={heading} />
+          </div>
           <div>
             <BuySellPanel selectedData={selectedData} />
           </div>
