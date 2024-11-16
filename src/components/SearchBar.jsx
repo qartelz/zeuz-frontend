@@ -1,4 +1,4 @@
-// components/SearchBar.js
+
 import React from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
