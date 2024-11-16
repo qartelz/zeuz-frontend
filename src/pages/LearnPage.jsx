@@ -38,6 +38,7 @@ const LearnPage = () => {
 
         const response = await fetch(endpoint);
         const data = await response.json(); // assuming the backend returns a JSON array
+        console.log(data)
         setStocks(data); // update the state with the fetched data
       } catch (error) {
         console.error("Error fetching stocks:", error);
@@ -48,12 +49,19 @@ const LearnPage = () => {
     fetchStocks();
   }, [heading]); // Dependency array includes heading
 
+  // const handleSearch = (query) => {
+  //   const filteredResults = stocks.filter((stock) =>
+  //     stock.name.toLowerCase().includes(query.toLowerCase())
+  //   );
+  //   setResults(filteredResults);
+  // };
   const handleSearch = (query) => {
     const filteredResults = stocks.filter((stock) =>
-      stock.name.toLowerCase().includes(query.toLowerCase())
+      stock.display_name.toLowerCase().includes(query.toLowerCase())
     );
     setResults(filteredResults);
   };
+  
 
   const handleChange = (e) => {
     const query = e.target.value;
@@ -72,7 +80,7 @@ const LearnPage = () => {
   };
 
   const filteredStocks = stocks.filter((stock) =>
-    stock.name.toLowerCase().includes(searchQuery.toLowerCase())
+    stock.display_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -117,8 +125,8 @@ const LearnPage = () => {
                       className="p-4 bg-white shadow rounded-lg cursor-pointer"
                       onClick={() => handleSelectStock(stock)}
                     >
-                      <div className="text-lg font-bold">{stock.name}</div>
-                      <div className="text-gray-600">Price: ${stock.price}</div>
+                      <div className="text-lg font-bold">{stock.display_name}</div>
+                      <div className="text-gray-600">Exchange: ${stock.exchange}</div>
                     </div>
                   ))}
                 </div>
