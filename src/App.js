@@ -18,7 +18,7 @@ function App() {
         <BgSvg />
       </div>
 
-      <div className="relative z-20">
+      <div className="relative z-20 font-oswald">
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<DashboardPage />} />

@@ -2,7 +2,7 @@ import React from 'react'
 import Navbar from '../components/Navbar'
 import HeroSection from '../components/HeroSection'
 import { useSelector } from 'react-redux';
-import WebSocketComponent from '../components/WebSocketComponent';
+
 
 const DashboardPage = () => {
 
@@ -23,7 +23,7 @@ const DashboardPage = () => {
         answers="With ZeuZ, you can learn by doing in a risk-free environment. Let’s get started on your journey to becoming a confident trader!"
         
       />
-      {/* <WebSocketComponent/> */}
+    
       
     </div>
   )

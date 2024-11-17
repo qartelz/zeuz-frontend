@@ -1,29 +1,30 @@
 import { useState } from "react";
 import BagSvg from "../assets/svg/BagSvg";
 import Navbar from "../components/Navbar";
-import dayjs from 'dayjs';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
-
+import dayjs from "dayjs";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 export default function UserProfile() {
   const [selectedDate, setSelectedDate] = useState(dayjs().date()); // Initialize with today's date
-  const [currentWeekStart, setCurrentWeekStart] = useState(dayjs().startOf('week').add(1, 'day')); // Start at the Monday of the current week
-  
-  const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const [currentWeekStart, setCurrentWeekStart] = useState(
+    dayjs().startOf("week").add(1, "day")
+  ); // Start at the Monday of the current week
 
-  
+  const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
   // Calculate the dates for the current week based on currentWeekStart
-  const weekDates = weekDays.map((_, index) => currentWeekStart.add(index, 'day'));
+  const weekDates = weekDays.map((_, index) =>
+    currentWeekStart.add(index, "day")
+  );
 
   // Function to move to the previous week
   const goToPreviousWeek = () => {
-    setCurrentWeekStart(currentWeekStart.subtract(7, 'day'));
+    setCurrentWeekStart(currentWeekStart.subtract(7, "day"));
   };
 
   // Function to move to the next week
   const goToNextWeek = () => {
-    setCurrentWeekStart(currentWeekStart.add(7, 'day'));
+    setCurrentWeekStart(currentWeekStart.add(7, "day"));
   };
   const [activeTab, setActiveTab] = useState("Portfolio");
 
@@ -71,30 +72,26 @@ export default function UserProfile() {
             A brief paragraph about the user, detailing interests, background,
             or anything else.
           </p>
+{/* Toggle Button for Portfolio/Profit-Loss */}
+<div className="flex items-center border rounded-full px-2 py-1 mb-8">
+  <button
+    className={`px-4 py-2 rounded-full ${
+      activeTab === "Portfolio" ? "bg-[#026E78] text-white" : "text-gray-600"
+    }`}
+    onClick={() => setActiveTab("Portfolio")}
+  >
+    Portfolio
+  </button>
+  <button
+    className={`px-4 py-2 rounded-full ${
+      activeTab === "Profit/Loss" ? "bg-[#026E78] text-white" : "text-gray-600"
+    }`}
+    onClick={() => setActiveTab("Profit/Loss")}
+  >
+    Profit/Loss
+  </button>
+</div>
 
-          {/* Toggle Button for Portfolio/Profit-Loss */}
-          <div className="flex items-center border rounded-full px-2 py-1 mb-8">
-            <button
-              className={`px-4 py-2 rounded-full {
-                activeTab === "Portfolio"
-                  ? "bg-[#026E78] text-white"
-                  : "text-gray-600"
-              }`}
-              onClick={() => setActiveTab("Portfolio")}
-            >
-              Portfolio
-            </button>
-            <button
-              className={`px-4 py-2 rounded-full {
-                activeTab === "Profit/Loss"
-                  ? "bg-[#026E78] text-white"
-                  : "text-gray-600"
-              }`}
-              onClick={() => setActiveTab("Profit/Loss")}
-            >
-              Profit/Loss
-            </button>
-          </div>
 
           {/* Content for Portfolio Tab */}
           {activeTab === "Portfolio" && (
@@ -107,7 +104,7 @@ export default function UserProfile() {
               />
 
               {/* Additional Info Boxes */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="flex flex-col md:grid grid-cols-3 gap-4">
                 <InfoBox
                   title="BEETLE"
                   subtitle="Available"
@@ -129,67 +126,72 @@ export default function UserProfile() {
               </div>
             </div>
           )}
-
 {activeTab === "Profit/Loss" && (
-  <div className="w-full flex flex-col items-start gap-6">
-  {/* Trade Summary and Trade History Headers */}
-  <div className="flex w-full justify-between">
-    <h2 className="text-lg font-semibold">Trade Summary</h2>
-    <h2 className="text-lg font-semibold">Trade History</h2>
-  </div>
+  <div className="w-full flex flex-col gap-6">
+    <div className="flex flex-col md:flex-row gap-6 w-full">
+      {/* Left Box - Trade Summary */}
+      <div className="w-full md:w-1/2">
+        <h2 className="text-lg font-semibold mb-4">Trade Summary</h2>
+        <div className="p-4 bg-gray-100 rounded-lg shadow">
+          <p>Your trade summary will be displayed here. Add more details as needed.</p>
+        </div>
+      </div>
 
-  <div className="flex gap-6 w-full">
-    {/* Left Box - Trade Summary */}
-    <div className="w-1/2 p-4 bg-gray-100 rounded-lg shadow">
-      <p>Your trade summary will be displayed here. Add more details as needed.</p>
-    </div>
-
-    {/* Right Box - Trade History */}
-    <div className="w-1/2 p-4 bg-gray-100 rounded-lg shadow">
-      <div className="flex justify-between items-center mb-4">
-        {/* Month and Year */}
-        <span className="text-lg font-medium">
-          {currentWeekStart.format('MMMM YYYY')}
-        </span>
-        {/* Chevron Icons for Navigation */}
-    
-        <div className="flex gap-2">
-              <button onClick={goToPreviousWeek} className="text-gray-500 hover:text-gray-700">
+      {/* Right Box - Trade History */}
+      <div className="w-full md:w-1/2">
+        <h2 className="text-lg font-semibold mb-4">Trade History</h2>
+        <div className="p-4 bg-gray-100 rounded-lg shadow">
+          <div className="flex justify-between items-center mb-4">
+            {/* Month and Year */}
+            <span className="text-lg font-medium">
+              {currentWeekStart.format("MMMM YYYY")}
+            </span>
+            {/* Chevron Icons for Navigation */}
+            <div className="flex gap-2">
+              <button
+                onClick={goToPreviousWeek}
+                className="text-gray-500 hover:text-gray-700"
+              >
                 <ChevronLeftIcon className="w-5 h-5" />
               </button>
-              <button onClick={goToNextWeek} className="text-gray-500 hover:text-gray-700">
+              <button
+                onClick={goToNextWeek}
+                className="text-gray-500 hover:text-gray-700"
+              >
                 <ChevronRightIcon className="w-5 h-5" />
               </button>
             </div>
-      </div>
-
-      {/* Weekdays */}
-      <div className="grid grid-cols-6 text-center font-medium text-gray-600">
-        {weekDays.map((day, index) => (
-          <span key={index}>{day}</span>
-        ))}
-      </div>
-
-      {/* Dates */}
-      <div className="grid grid-cols-6 text-center mt-2">
-        {weekDates.map((date, index) => (
-          <div
-            key={index}
-            onClick={() => setSelectedDate(date.date())}
-            className={`p-2 rounded-full cursor-pointer {
-              date.date() === selectedDate && date.isSame(dayjs(), 'month')
-                ? 'bg-blue-500 text-white'
-                : 'text-gray-700'
-            } hover:bg-blue-200`}
-          >
-            {date.date()}
           </div>
-        ))}
+
+          {/* Weekdays */}
+          <div className="grid grid-cols-6 text-center font-medium text-gray-600">
+            {weekDays.map((day, index) => (
+              <span key={index}>{day}</span>
+            ))}
+          </div>
+
+          {/* Dates */}
+          <div className="grid grid-cols-6 text-center mt-2">
+            {weekDates.map((date, index) => (
+              <div
+                key={index}
+                onClick={() => setSelectedDate(date.date())}
+                className={`p-2 rounded-full cursor-pointer ${
+                  date.date() === selectedDate && date.isSame(dayjs(), "month")
+                    ? "bg-blue-500 text-white"
+                    : "text-gray-700"
+                } hover:bg-blue-200`}
+              >
+                {date.date()}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
 )}
+
         </div>
       </div>
     </main>

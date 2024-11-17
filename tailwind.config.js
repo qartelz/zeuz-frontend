@@ -9,6 +9,13 @@ module.exports = {
       fontFamily: {
         'k2d': ['K2D', 'sans-serif'],
         'poppins': ['Poppins', 'sans-serif'],
+        'nunito-sans': ['Nunito Sans', 'sans-serif'],
+        'oswald': ['Oswald', 'sans-serif'],
+
+
+       
+        
+
       },
       
       keyframes: {

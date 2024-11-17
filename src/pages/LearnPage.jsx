@@ -208,7 +208,7 @@ const LearnPage = () => {
             <OptionChain  data={optionData} heading={heading} />
           </div>
           <div>
-            <BuySellPanel selectedData={selectedData} />
+            {/* <BuySellPanel selectedData={selectedData} /> */}
           </div>
         </div>
       )}
