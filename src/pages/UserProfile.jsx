@@ -37,7 +37,7 @@ export default function UserProfile() {
         <div className="w-8 h-8 text-white rounded-full flex items-center justify-center mr-4">
           <BagSvg />
         </div>
-        <p className="text-xl font-semibold text-left mr-2">${amount}</p>
+        <p className="text-xl font-semibold text-left mr-2">{amount}</p>
         <p className="text-xl font-semibold text-left">(+{percentage}%)</p>
       </div>
     </div>
@@ -75,7 +75,7 @@ export default function UserProfile() {
           {/* Toggle Button for Portfolio/Profit-Loss */}
           <div className="flex items-center border rounded-full px-2 py-1 mb-8">
             <button
-              className={`px-4 py-2 rounded-full ${
+              className={`px-4 py-2 rounded-full {
                 activeTab === "Portfolio"
                   ? "bg-[#026E78] text-white"
                   : "text-gray-600"
@@ -85,7 +85,7 @@ export default function UserProfile() {
               Portfolio
             </button>
             <button
-              className={`px-4 py-2 rounded-full ${
+              className={`px-4 py-2 rounded-full {
                 activeTab === "Profit/Loss"
                   ? "bg-[#026E78] text-white"
                   : "text-gray-600"
@@ -176,7 +176,7 @@ export default function UserProfile() {
           <div
             key={index}
             onClick={() => setSelectedDate(date.date())}
-            className={`p-2 rounded-full cursor-pointer ${
+            className={`p-2 rounded-full cursor-pointer {
               date.date() === selectedDate && date.isSame(dayjs(), 'month')
                 ? 'bg-blue-500 text-white'
                 : 'text-gray-700'

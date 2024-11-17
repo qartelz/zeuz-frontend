@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronDownIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
 import BeetleBalance from "./BeetleBalance";
 
@@ -9,14 +9,41 @@ const BuySellPanel = ({ selectedData }) => {
 
   const [isBuy, setIsBuy] = useState(true);
   const [quantity, setQuantity] = useState(selectedData?.lot_size || 0);
+  const [beetleCoins, setBeetleCoins] = useState(null); // State to store Beetle Coins data
 
+  // UseEffect to fetch Beetle Coins from the API
+  useEffect(() => {
+    const email = localStorage.getItem("email"); // Get email from localStorage
+
+    if (email) {
+      const fetchBeetleCoins = async () => {
+        try {
+          const response = await fetch(
+            `http://127.0.0.1:8000/account/get-beetle-coins/?email=${email}`
+          );
+          const data = await response.json();
+          setBeetleCoins(data); // Update the state with the fetched data
+        } catch (error) {
+          console.error("Error fetching Beetle Coins:", error);
+        }
+      };
+
+      fetchBeetleCoins(); // Call the fetch function
+    }
+  }, []); // Empty dependency array to run this only once when the component mounts
 
   return (
     <div className="p-4 bg-transparent rounded-md space-y-4">
       <div className="flex items-center space-x-4 whitespace-nowrap">
         <BeetleBalance />
+        {/* Display the fetched Beetle Coins data */}
+        {beetleCoins && (
+          <div className="bg-white text-[#7D7D7D] border shadow-sm p-2 rounded-md">
+            <span>Beetle Coins: {beetleCoins.amount}</span>
+          </div>
+        )}
       </div>
-    
+
       {/* Selected Stock Display */}
       <div className="bg-white text-[#7D7D7D] border shadow-sm p-2 rounded-md">
         <span>{selectedData?.display_name || "No stock selected"}</span>
@@ -70,6 +97,7 @@ const BuySellPanel = ({ selectedData }) => {
         <input
           type="number"
           placeholder="Price"
+          value={selectedData.strike_price}
           className="w-full p-2 text-[#7D7D7D] border bg-white rounded-md"
         />
 
@@ -107,6 +135,11 @@ const BuySellPanel = ({ selectedData }) => {
           className={`w-full px-2 py-2 rounded-md ${
             isBuy ? "bg-green-800" : "bg-[#D83232]"
           } text-white`}
+          onClick={() =>
+            alert(
+              "The market is closed today. The order will be executed on Monday morning at 9:15 AM."
+            )
+          }
         >
           {isBuy ? "Buy" : "Sell"}
         </button>

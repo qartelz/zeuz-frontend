@@ -105,7 +105,7 @@ const StockInfo = ({ selectedData, stocks,result }) => {
 
       <div className="flex flex-wrap items-center space-x-4 space-y-2">
         <div className="text-left whitespace-nowrap">
-          <p className="text-lg font-bold">1234.56</p>
+          <p className="text-lg font-bold">{selectedData.strike_price}</p>
           <p className="text-sm text-gray-400">Last Traded Price</p>
         </div>
       </div>

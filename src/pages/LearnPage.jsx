@@ -173,7 +173,7 @@ const LearnPage = () => {
                       onClick={() => handleSelectStock(stock)}
                     >
                       <div className="text-lg font-bold">{stock.display_name}</div>
-                      <div className="text-gray-600">Exchange: ${stock.exchange}</div>
+                      <div className="text-gray-600">Exchange: {stock.exchange}</div>
                     </div>
                   ))}
                 </div>

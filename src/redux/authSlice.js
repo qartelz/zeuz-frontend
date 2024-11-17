@@ -12,6 +12,7 @@ export const login = createAsyncThunk(
       return response.data;
     } catch (error) {
       console.error("Error:", error);
+      alert("Error:", error);
       return rejectWithValue(error.response?.data || "An unexpected error occurred");
     }
   }

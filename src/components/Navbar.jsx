@@ -18,7 +18,7 @@ export default function Navbar() {
     { name: "Dashboard", path: "/" },
     { name: "Practice", path: "/practice" },
     { name: "My Trades", path: "/my-trades" },
-    { name: "Learn", path: "/learn" },
+    
   ];
 
   // Close dropdown if clicked outside of it
