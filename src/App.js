@@ -8,6 +8,7 @@ import UserProfile from "./pages/UserProfile";
 import AdminPage from "./pages/AdminPage";
 import LearnPage from "./pages/LearnPage";
 import AdminLogin from "./pages/AdminLogin";
+import TradesPage from "./pages/TradesPage";
 
 function App() {
   return (  
@@ -24,6 +25,7 @@ function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/login" element={<AuthPage />} />
             <Route path="/practice" element={<PracticePage />} />
+            <Route path="/my-trades" element={<TradesPage />} />
             <Route path="/practice/learn" element={<LearnPage />} />
             <Route path="/my-profile" element={<UserProfile />} />
             <Route path="/admin/token" element={<AdminPage />} />
