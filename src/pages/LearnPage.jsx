@@ -193,7 +193,7 @@ const LearnPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-6 p-6">
           <div className="space-y-6">
             <StockInfo selectedData={selectedData} stocks={stocks} results={results} />
-            <TradingViewWidget />
+            <TradingViewWidget selectedData={selectedData} />
           </div>
 
           <div>

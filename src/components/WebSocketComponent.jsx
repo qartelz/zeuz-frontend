@@ -1,67 +1,69 @@
 import React, { useEffect, useState } from 'react';
 
-const WebSocketComponent = () => {
+const WebSocketComponent = ({ selectedData, onPriceUpdate }) => {
   const [socket, setSocket] = useState(null);
-  const [message, setMessage] = useState('');
-  const heartbeatInterval = 60000; // 1 minute in milliseconds
+  const heartbeatInterval = 60000;
+  const touchlineInterval = 5000;
   let heartbeatTimer;
+  let touchlineTimer;
 
   useEffect(() => {
-    // Initialize WebSocket
     const ws = new WebSocket('wss://orca-uatwss.enrichmoney.in/ws');
 
-    // Open WebSocket and send initial data
     ws.onopen = () => {
       console.log('WebSocket connected');
+      
       const initialData = {
         t: 'c',
         uid: 'AB121627',
         actid: 'AB121627',
-        susertoken: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIiwiaWF0IjoxNzMxNjQ4NDc5LCJleHAiOjE3MzE3MTcwMDAsInN1YmplY3RfaWQiOiJBQjEyMTYyNyIsInBhcnRuZXJfY2hhbm5lbCI6IkFQSSIsInBhcnRuZXJfY29kZSI6IklOU1RBT1BUSU9OUyIsInVzZXJfaWQiOiJBQjEyMTYyNyIsImxhc3RfdmFsaWRhdGVkX2RhdGVfdGltZSI6MTczMTY0ODQ3OTY3MywiaXNzdWVyX2lkIjoiaHR0cHM6Ly9zc28uZW5yaWNobW9uZXkuaW4vb3JnL2lzc3VlciJ9.lkrWU1aiJd8OHpIBtPRiH06-JjB6ItZp11R269qKlng',
+        susertoken: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIiwiaWF0IjoxNzMxOTAwMjI5LCJleHAiOjE3MzQ0ODE4MDAsInN1YmplY3RfaWQiOiJBQjEyMTYyNyIsInBhcnRuZXJfY2hhbm5lbCI6ImVhc3lhbGdvIiwicGFydG5lcl9jb2RlIjoiRU5SSUNIIiwidXNlcl9pZCI6IkFCMTIxNjI3IiwibGFzdF92YWxpZGF0ZWRfZGF0ZV90aW1lIjoxNzMxOTAwMjI5ODMyLCJpc3N1ZXJfaWQiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIn0.JmuaiI0NpalEf2p9VMgFW4nSJY64j_FCjl1dKrTOK4o',
         source: 'API',
       };
       ws.send(JSON.stringify(initialData));
 
-      // Start sending heartbeats
       heartbeatTimer = setInterval(() => {
-        const heartbeatData = { t: 'h' };
-        ws.send(JSON.stringify(heartbeatData));
-        console.log('Heartbeat sent:', heartbeatData);
+        ws.send(JSON.stringify({ t: 'h' }));
       }, heartbeatInterval);
+
+      touchlineTimer = setInterval(() => {
+        ws.send(JSON.stringify({
+          t: 't',
+          k: `${selectedData.exchange}|${selectedData.token_id}`,
+        }));
+      }, touchlineInterval);
     };
 
-    // Handle incoming messages
     ws.onmessage = (event) => {
-      console.log('Message received:', event.data);
-      setMessage(event.data);
+      try {
+        const data = JSON.parse(event.data);
+        if (data.lp) {
+          onPriceUpdate(data.lp);
+        }
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+      }
     };
 
-    // Handle WebSocket errors
     ws.onerror = (error) => {
       console.error('WebSocket error:', error);
     };
 
-    // Handle WebSocket closure
     ws.onclose = () => {
       console.log('WebSocket disconnected');
-      clearInterval(heartbeatTimer); // Stop sending heartbeats
+      clearInterval(heartbeatTimer);
+      clearInterval(touchlineTimer);
     };
 
     setSocket(ws);
 
-    // Clean up on component unmount
     return () => {
       ws.close();
-      clearInterval(heartbeatTimer); // Ensure timer is cleared
+      clearInterval(heartbeatTimer);
+      clearInterval(touchlineTimer);
     };
-  }, []);
+  }, [selectedData, onPriceUpdate]);
 
-  return (
-    <div>
-      <h1>WebSocket Example</h1>
-      <p>Received Message: {message}</p>
-    </div>
-  );
+  return null; // No need to render anything as we're just handling the WebSocket
 };
 
-export default WebSocketComponent;
