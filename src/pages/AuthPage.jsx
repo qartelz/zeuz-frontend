@@ -114,7 +114,11 @@ const AuthPage = () => {
                 Login
               </button>
 
-              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+              {error && (
+          <p className="text-red-500 text-sm mt-2">
+            {typeof error === "string" ? error : "An error occurred. Please try again."}
+          </p>
+        )}
             </div>
           ) : (
             // Sign Up Form

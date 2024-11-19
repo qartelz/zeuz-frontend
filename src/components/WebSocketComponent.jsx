@@ -1,69 +1,80 @@
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from "react";
 
-const WebSocketComponent = ({ selectedData, onPriceUpdate }) => {
-  const [socket, setSocket] = useState(null);
-  const heartbeatInterval = 60000;
-  const touchlineInterval = 5000;
-  let heartbeatTimer;
-  let touchlineTimer;
+const WebSocketContext = createContext(null);
+
+export const WebSocketProvider = ({ children, selectedData }) => {
+  const [lastPrice, setLastPrice] = useState(selectedData?.strike_price || "0.00");
+  const [volume, setVolume] = useState("0.00");
+  const [percentChange, setPercentChange] = useState("0.00");
 
   useEffect(() => {
-    const ws = new WebSocket('wss://orca-uatwss.enrichmoney.in/ws');
+    const heartbeatInterval = 60000;
+    const touchlineInterval = 5000;
+    let heartbeatTimer;
+    let touchlineTimer;
+    const ws = new WebSocket("wss://orca-uatwss.enrichmoney.in/ws");
 
     ws.onopen = () => {
-      console.log('WebSocket connected');
-      
+      console.log("WebSocket connected");
+
       const initialData = {
-        t: 'c',
-        uid: 'AB121627',
-        actid: 'AB121627',
-        susertoken: 'eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIiwiaWF0IjoxNzMxOTAwMjI5LCJleHAiOjE3MzQ0ODE4MDAsInN1YmplY3RfaWQiOiJBQjEyMTYyNyIsInBhcnRuZXJfY2hhbm5lbCI6ImVhc3lhbGdvIiwicGFydG5lcl9jb2RlIjoiRU5SSUNIIiwidXNlcl9pZCI6IkFCMTIxNjI3IiwibGFzdF92YWxpZGF0ZWRfZGF0ZV90aW1lIjoxNzMxOTAwMjI5ODMyLCJpc3N1ZXJfaWQiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIn0.JmuaiI0NpalEf2p9VMgFW4nSJY64j_FCjl1dKrTOK4o',
-        source: 'API',
+        t: "c",
+        uid: "KE0070",
+        actid: "KE0070",
+        susertoken:
+          "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIiwiaWF0IjoxNzMyMDA2MDc1LCJleHAiOjE3MzIwODI0MDAsInN1YmplY3RfaWQiOiJLRTAwNzAiLCJwYXJ0bmVyX2NoYW5uZWwiOiJBUEkiLCJwYXJ0bmVyX2NvZGUiOiJLRTAwNzAiLCJ1c2VyX2lkIjoiS0UwMDcwIiwibGFzdF92YWxpZGF0ZWRfZGF0ZV90aW1lIjoxNzMyMDA2MDc1NjYyLCJpc3N1ZXJfaWQiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIn0.J7UNVR1jcR6VN5HwheKTLFLWxAe2Zd3Fg6wKLE09Qg8",
+        source: "API",
       };
+
       ws.send(JSON.stringify(initialData));
-
-      heartbeatTimer = setInterval(() => {
-        ws.send(JSON.stringify({ t: 'h' }));
-      }, heartbeatInterval);
-
-      touchlineTimer = setInterval(() => {
-        ws.send(JSON.stringify({
-          t: 't',
-          k: `${selectedData.exchange}|${selectedData.token_id}`,
-        }));
-      }, touchlineInterval);
     };
 
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+      
         if (data.lp) {
-          onPriceUpdate(data.lp);
+          setLastPrice(data.lp); // Assuming setLastPrice is your state setter for last price
         }
+        if (data.v) setVolume(data.v);
+        if (data.pc) setPercentChange(data.pc);
       } catch (error) {
-        console.error('Error parsing WebSocket message:', error);
+        console.error("Error parsing WebSocket message:", error);
       }
+      heartbeatTimer = setInterval(() => {
+        ws.send(JSON.stringify({ t: 'h' }));
+      }, heartbeatInterval);
+
+      touchlineTimer = setInterval(() => {
+        if (selectedData) {
+          ws.send(JSON.stringify({
+            t: 't',
+            k: `${selectedData.exchange}|${selectedData.token_id}`,
+          }));
+        }
+      }, touchlineInterval);
     };
 
     ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.error("WebSocket error:", error);
     };
 
     ws.onclose = () => {
-      console.log('WebSocket disconnected');
-      clearInterval(heartbeatTimer);
-      clearInterval(touchlineTimer);
+      console.log("WebSocket disconnected");
     };
-
-    setSocket(ws);
 
     return () => {
       ws.close();
-      clearInterval(heartbeatTimer);
-      clearInterval(touchlineTimer);
     };
-  }, [selectedData, onPriceUpdate]);
+  }, []);
 
-  return null; // No need to render anything as we're just handling the WebSocket
+  return (
+    <WebSocketContext.Provider
+      value={{ lastPrice, volume, percentChange }}
+    >
+      {children}
+    </WebSocketContext.Provider>
+  );
 };
 
+export const useWebSocket = () => useContext(WebSocketContext);

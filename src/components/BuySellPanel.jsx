@@ -1,19 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { ChevronDownIcon, MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronDownIcon,
+  MinusIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 import BeetleBalance from "./BeetleBalance";
+import { useWebSocket } from "./WebSocketComponent";
 
 const BuySellPanel = ({ selectedData }) => {
+  const [userId, setUserId] = useState(null);
+
+  const authDataString = localStorage.getItem("authData");
+  const authData = authDataString ? JSON.parse(authDataString) : null;
+  const accessToken = authData?.access;
+  const user_id = authData?.user_id;
+
+
+
+  const { lastPrice } = useWebSocket();
+
   const [selectedOrderType, setSelectedOrderType] = useState("Market Order");
-  const [orderTypes, setOrderTypes] = useState(["Market Order", "Limit Order"]);
   const [isOrderDropdownOpen, setIsOrderDropdownOpen] = useState(false);
 
   const [isBuy, setIsBuy] = useState(true);
   const [quantity, setQuantity] = useState(selectedData?.lot_size || 0);
-  const [beetleCoins, setBeetleCoins] = useState(null); // State to store Beetle Coins data
+  const [beetleCoins, setBeetleCoins] = useState(null);
 
-  // UseEffect to fetch Beetle Coins from the API
   useEffect(() => {
-    const email = localStorage.getItem("email"); // Get email from localStorage
+    const email = localStorage.getItem("email");
 
     if (email) {
       const fetchBeetleCoins = async () => {
@@ -22,21 +36,74 @@ const BuySellPanel = ({ selectedData }) => {
             `http://127.0.0.1:8000/account/get-beetle-coins/?email=${email}`
           );
           const data = await response.json();
-          setBeetleCoins(data); // Update the state with the fetched data
+          setBeetleCoins(data);
         } catch (error) {
           console.error("Error fetching Beetle Coins:", error);
         }
       };
 
-      fetchBeetleCoins(); // Call the fetch function
+      fetchBeetleCoins();
     }
-  }, []); // Empty dependency array to run this only once when the component mounts
+  }, []);
+
+  const handleTrade = async () => {
+    if (!selectedData) {
+      alert("Please select a stock.");
+      return;
+    }
+
+    const tradeData = {
+      user: user_id,
+      token_id: selectedData.token_id,
+      exchange: selectedData.exchange || "NSE",
+      trading_symbol: selectedData.trading_symbol || "",
+      series: selectedData.series || "EQ",
+      lot_size: selectedData.lot_size || 0,
+      quantity: quantity || 0,
+      display_name: selectedData.display_name || "",
+      company_name: selectedData.company_name || "",
+      expiry_date: selectedData.expiry_date || null,
+      segment: selectedData.segment || "EQUITY",
+      option_type: selectedData.option_type || null,
+      trade_type: isBuy ? "Buy" : "Sell",
+      avg_price: lastPrice || 0,
+      prctype: selectedOrderType === "Market Order" ? "MKT" : "LMT",
+      invested_coin: (lastPrice || 0) * quantity,
+      trade_status: "incomplete",
+      ticker: selectedData.ticker || "",
+    };
+    console.log(tradeData);
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/trades/create-trades/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(tradeData),
+        }
+      );
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log("Trade created successfully:", result);
+        alert("Trade created successfully!");
+      } else {
+        console.error("Error creating trade:", response.statusText);
+        alert("Failed to create trade. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error during API call:", error);
+      alert("An error occurred. Please try again later.");
+    }
+  };
 
   return (
     <div className="p-4 bg-transparent rounded-md space-y-4">
       <div className="flex items-center space-x-4 whitespace-nowrap">
         <BeetleBalance />
-        {/* Display the fetched Beetle Coins data */}
         {beetleCoins && (
           <div className="bg-white text-[#7D7D7D] border shadow-sm p-2 rounded-md">
             <span>Beetle Coins: {beetleCoins.amount}</span>
@@ -44,12 +111,10 @@ const BuySellPanel = ({ selectedData }) => {
         )}
       </div>
 
-      {/* Selected Stock Display */}
       <div className="bg-white text-[#7D7D7D] border shadow-sm p-2 rounded-md">
         <span>{selectedData?.display_name || "No stock selected"}</span>
       </div>
 
-      {/* Buy/Sell Options */}
       <div className="flex items-center justify-between space-x-2">
         <span className="text-[#7D7D7D] text-xl font-bold">I want to:</span>
         <div className="flex space-x-2">
@@ -77,7 +142,6 @@ const BuySellPanel = ({ selectedData }) => {
       </div>
 
       <div className="space-y-2">
-        {/* Quantity */}
         <div className="flex items-center justify-between bg-white text-[#7D7D7D] border shadow-sm p-2 rounded-md">
           <span>Quantity</span>
           <div className="flex items-center space-x-2">
@@ -93,15 +157,22 @@ const BuySellPanel = ({ selectedData }) => {
           </div>
         </div>
 
-        {/* Price */}
-        <input
-          type="number"
-          placeholder="Price"
-          value={selectedData.strike_price}
-          className="w-full p-2 text-[#7D7D7D] border bg-white rounded-md"
-        />
+        <div className="relative w-full">
+          <label
+            htmlFor="lastPrice"
+            className="absolute mt-4 font-semibold left-2 rounded-md top-[-10px] text-xs text-[#7D7D7D] bg-white px-1"
+          >
+            Price. (BTLS)
+          </label>
+          <input
+            type="number"
+            id="lastPrice"
+            value={lastPrice}
+            className="w-full p-2 text-[#7D7D7D] mt-4 border bg-white rounded-md"
+            readOnly
+          />
+        </div>
 
-        {/* Order Type Dropdown */}
         <div className="relative">
           <div
             className="flex items-center justify-between bg-white text-[#7D7D7D] border p-2 rounded-md cursor-pointer"
@@ -110,36 +181,15 @@ const BuySellPanel = ({ selectedData }) => {
             <span>{selectedOrderType}</span>
             <ChevronDownIcon className="w-4 h-4" />
           </div>
-          {isOrderDropdownOpen && (
-            <div className="absolute z-10 mt-2 w-full bg-white border rounded-md shadow-md">
-              {orderTypes.map((type, index) => (
-                <div
-                  key={index}
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => {
-                    setSelectedOrderType(type);
-                    setIsOrderDropdownOpen(false);
-                  }}
-                >
-                  {type}
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Buy/Sell and Cancel Buttons */}
       <div className="flex px-10 text-white text-bold space-x-2">
         <button
           className={`w-full px-2 py-2 rounded-md ${
             isBuy ? "bg-green-800" : "bg-[#D83232]"
           } text-white`}
-          onClick={() =>
-            alert(
-              "The market is closed today. The order will be executed on Monday morning at 9:15 AM."
-            )
-          }
+          onClick={handleTrade}
         >
           {isBuy ? "Buy" : "Sell"}
         </button>

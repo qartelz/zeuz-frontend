@@ -40,7 +40,7 @@ const HeroSection = ({ username, welcomemsg, question, answers }) => {
   ];
 
   const navigateToAllTrades = () => {
-    navigate("/all-trades");
+    navigate("/my-trades");
   };
 
   return (

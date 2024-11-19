@@ -1,19 +1,23 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Define the login async thunk
+
 export const login = createAsyncThunk(
   "auth/login",
   async ({ email, password }, { rejectWithValue }) => {
-    console.log(email, password, "testing please cooperate");
     try {
-      const response = await axios.post('http://127.0.0.1:8000/account/login/', { email, password });
-      console.log(response);
-      return response.data;
+      const response = await axios.post(
+        "http://127.0.0.1:8000/account/login/",
+        { email, password }
+      );
+      console.log("Login Successful:", response.data);
+      return response.data; // Assuming response includes access, refresh, etc.
     } catch (error) {
-      console.error("Error:", error);
-      alert("Error:", error);
-      return rejectWithValue(error.response?.data || "An unexpected error occurred");
+      console.error("Login Failed:", error.response || error);
+      // Provide detailed error messages
+      return rejectWithValue(
+        error.response?.data?.message || "Invalid username or password"
+      );
     }
   }
 );
@@ -30,9 +34,7 @@ const authSlice = createSlice({
     error: null,
   },
   reducers: {
-    // You can add actions like logout here if needed
     logout: (state) => {
-      // Clear the data in the Redux store
       state.name = null;
       state.access = null;
       state.refresh = null;
@@ -40,7 +42,7 @@ const authSlice = createSlice({
       state.email = null;
       state.error = null;
 
-      // Clear the data from localStorage
+      // Clear auth data from localStorage
       localStorage.removeItem("authData");
     },
   },
@@ -48,7 +50,7 @@ const authSlice = createSlice({
     builder
       .addCase(login.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = null; // Clear previous errors
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
@@ -57,24 +59,34 @@ const authSlice = createSlice({
         state.name = action.payload.name;
         state.user_id = action.payload.user_id;
         state.email = action.payload.email;
+        state.broadcast_token = action.payload.broadcast_token;
+        state.broadcast_userid = action.broadcast_userid;
 
-        // Store the login details in localStorage
-        localStorage.setItem("authData", JSON.stringify({
-          access: action.payload.access,
-          refresh: action.payload.refresh,
-          name: action.payload.name,
-          user_id: action.payload.user_id,
-          email: action.payload.email,
-        }));
+
+
+      
+        localStorage.setItem(
+          "authData",
+          JSON.stringify({
+            access: action.payload.access,
+            refresh: action.payload.refresh,
+            name: action.payload.name,
+            user_id: action.payload.user_id,
+            email: action.payload.email,
+            broadcast_token : action.payload.broadcast_token,
+            broadcast_userid : action.payload.broadcast_userid,
+
+          })
+        );
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload; 
       });
   },
 });
 
-// Add action to clear data from localStorage and Redux store
+
 export const { logout } = authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,6 +1,15 @@
+import axios from 'axios';
 import React, { useState, useEffect, useRef } from 'react';
 
 const OptionChain = () => {
+
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const baseUrl = process.env.REACT_APP_BASE_URL;
+  console.log(baseUrl,"the base url is")
+
+
+  
   const basePrice = 23532.70;
   const [currentPrice, setCurrentPrice] = useState(basePrice);
   
@@ -15,7 +24,7 @@ const OptionChain = () => {
 
   const [strikeValues] = useState(generateStrikes());
 
-  // Generate random option data for each strike
+
   const generateOptionsData = () => {
     return strikeValues.map(strike => ({
       strike,
@@ -118,6 +127,23 @@ const OptionChain = () => {
   };
 
   const displayData = getDisplayData();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/instrument/optionchain/', {
+          params: { script_name: 'BANKNIFTY' }, // Pass query parameters here.
+        });
+        setData(response.data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchData();
+  }, [baseUrl]);
+  
+
 
   return (
     <div className="w-full max-w-7xl mx-auto p-4 bg-white rounded-lg shadow-lg">

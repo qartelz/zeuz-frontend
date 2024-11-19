@@ -9,9 +9,11 @@ import AdminPage from "./pages/AdminPage";
 import LearnPage from "./pages/LearnPage";
 import AdminLogin from "./pages/AdminLogin";
 import TradesPage from "./pages/TradesPage";
+import { WebSocketProvider } from "./components/WebSocketComponent";
 
 function App() {
   return (  
+    <WebSocketProvider>
     <div className="relative overflow-hidden bg-slate-50">
       <div className="absolute inset-0 z-0"></div>
 
@@ -35,6 +37,7 @@ function App() {
         </BrowserRouter>
       </div>
     </div>
+    </WebSocketProvider>
   );
 }
 

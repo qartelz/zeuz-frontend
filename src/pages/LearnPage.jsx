@@ -8,8 +8,67 @@ import StockInfo from "../components/StockInfo";
 import BuySellPanel from "../components/BuySellPanel";
 import BeetleBalance from "../components/BeetleBalance";
 import OptionChain from "../components/OptionChain";
+import { WebSocketProvider } from "../components/WebSocketComponent";
 
 const LearnPage = () => {
+
+  const [chartData, setChartData] = useState([]);
+  console.log(chartData)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          'https://orca-uatapi.enrichmoney.in/ert-analytics-api/v1/charts/historical',
+          {
+            
+            method: 'POST',
+            
+            headers: {
+              'Content-Type': 'application/json',
+              'user-id': 'KE0070',
+              Authorization:
+                'Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIiwiaWF0IjoxNzMyMDA2MDc1LCJleHAiOjE3MzIwODI0MDAsInN1YmplY3RfaWQiOiJLRTAwNzAiLCJwYXJ0bmVyX2NoYW5uZWwiOiJBUEkiLCJwYXJ0bmVyX2NvZGUiOiJLRTAwNzAiLCJ1c2VyX2lkIjoiS0UwMDcwIiwibGFzdF92YWxpZGF0ZWRfZGF0ZV90aW1lIjoxNzMyMDA2MDc1NjYyLCJpc3N1ZXJfaWQiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIn0.J7UNVR1jcR6VN5HwheKTLFLWxAe2Zd3Fg6wKLE09Qg8',
+            },
+            body: JSON.stringify({
+              start_time: '2024-11-19T03:45:00.000Z',
+              end_time: '2024-11-19T09:15:00.000Z',
+              interval: '1minute',
+              ticker: 'TCS.NSE',
+              source: 'nse',
+            }),
+          }
+          
+        );
+        console.log(response);
+        
+
+        
+        
+
+      
+
+        const result = await response.json();
+        
+
+
+        if (result.success) {
+          setChartData(result.data);
+          
+        } else {
+          console.error('Failed to fetch chart data:', result.systemMessage);
+        }
+      } catch (error) {
+        console.error('Error fetching chart data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+
+  const userId = "KE0070"; 
+  const jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIiwiaWF0IjoxNzMyMDA2MDc1LCJleHAiOjE3MzIwODI0MDAsInN1YmplY3RfaWQiOiJLRTAwNzAiLCJwYXJ0bmVyX2NoYW5uZWwiOiJBUEkiLCJwYXJ0bmVyX2NvZGUiOiJLRTAwNzAiLCJ1c2VyX2lkIjoiS0UwMDcwIiwibGFzdF92YWxpZGF0ZWRfZGF0ZV90aW1lIjoxNzMyMDA2MDc1NjYyLCJpc3N1ZXJfaWQiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIn0.J7UNVR1jcR6VN5HwheKTLFLWxAe2Zd3Fg6wKLE09Qg8"; // Replace with actual JWT token
 
   const optionData = [
     {
@@ -69,7 +128,9 @@ const LearnPage = () => {
       } else if (heading === "Futures Trading") {
         return "http://127.0.0.1:8000/instrument/search/?exchange=NFO&segment=FUT";
       }
-      // Add more conditions here if needed for other headings
+      else if (heading === "Options Trading") {
+        return "http://127.0.0.1:8000/instrument/search/?exchange=NFO&segment=OPT";
+      }
       return null;
     };
 
@@ -121,11 +182,6 @@ const LearnPage = () => {
     setResults([]); // Clear the search results
   };
 
-  const filteredStocks = stocks.filter((stock) =>
-    stock.display_name.toLowerCase().includes(searchQuery.toLowerCase())
-  
-  );
-  // console.log(filteredStocks)
 
   return (
     <div className="p-4 text-gray-800 min-h-screen">
@@ -190,16 +246,18 @@ const LearnPage = () => {
       </div>
 
       {selectedData && !searchQuery && heading !== "Options Trading" && (
+        <WebSocketProvider selectedData={selectedData}>
         <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-6 p-6">
           <div className="space-y-6">
             <StockInfo selectedData={selectedData} stocks={stocks} results={results} />
-            <TradingViewWidget selectedData={selectedData} />
+            <TradingViewWidget data={chartData} />
           </div>
 
           <div>
             <BuySellPanel selectedData={selectedData} />
           </div>
         </div>
+         </WebSocketProvider>
       )}
 
       { heading === "Options Trading" && (
