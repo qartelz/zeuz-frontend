@@ -1,49 +1,22 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import BuySellPanel from "./BuySellPanel"; // Import your modal component
 
-const OpenOrders = ({ maxTrades }) => {
+const OpenOrders = ({ trades, maxTrades }) => {
   const [expandedTradeIndex, setExpandedTradeIndex] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedTrade, setSelectedTrade] = useState(null);
+
   const toggleExpand = (index) => {
     setExpandedTradeIndex(index === expandedTradeIndex ? null : index);
   };
 
-  const [trades, setTrades] = useState([]); // State to store trades
-
-  const authDataString = localStorage.getItem("authData");
-  const authData = authDataString ? JSON.parse(authDataString) : null;
-  const accessToken = authData?.access;
-
-  useEffect(() => {
-    const fetchOpenOrders = async () => {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/trades/trades/",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-
-        if (response.data && Array.isArray(response.data)) {
-          
-          const completedTrades = response.data.filter(
-            (trade) => trade.trade_status === "incomplete"
-          );
-          setTrades(completedTrades);
-        } else {
-          console.error("Unexpected response format:", response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching open orders data:", error);
-      }
-    };
-
-    fetchOpenOrders();
-  }, [accessToken]);
-
   const displayedTrades = maxTrades ? trades.slice(0, maxTrades) : trades;
+
+  const handleOpenModal = (trade) => {
+    setSelectedTrade(trade); // Pass the selected trade to the modal
+    setModalOpen(true); // Open the modal
+  };
 
   return (
     <div className="max-w-4xl mx-auto mt-8 p-4">
@@ -112,12 +85,33 @@ const OpenOrders = ({ maxTrades }) => {
                 <p className="text-gray-500 mt-2">
                   <strong>Created On:</strong> {trade.created_at}
                 </p>
+                <button
+                  onClick={() => handleOpenModal(trade)}
+                  className={`mt-4 px-4 py-2 rounded-md ${
+                    trade.trade_type === "Buy"
+                      ? "bg-red-500 text-white"
+                      : "bg-green-500 text-white"
+                  }`}
+                >
+                  {trade.trade_type === "Buy" ? "Sell" : "Buy"}
+                </button>
               </div>
             </div>
           </div>
         ))
       ) : (
         <p className="text-center text-gray-500">No Open Positions available.</p>
+      )}
+      {/* Render Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-md shadow-lg">
+            <BuySellPanel
+              selectedData={selectedTrade}
+              onClose={() => setModalOpen(false)} // Pass close handler
+            />
+          </div>
+        </div>
       )}
     </div>
   );

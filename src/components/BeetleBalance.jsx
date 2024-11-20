@@ -1,8 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { PlusIcon } from "@heroicons/react/24/outline";
 import CoinSvg from '../assets/svg/CoinSvg';
+import axios from "axios";
 
 const BeetleBalance = () => {
+  
+  const authDataString = localStorage.getItem("authData");
+  const authData = authDataString ? JSON.parse(authDataString) : null;
+  const accessToken = authData?.access;
+  const [totalAvbl, setTotalAvbl] = useState(null); 
+
+
+  useEffect(() => {
+    
+    const fetchProfitLoss = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/account/trade-summary/", 
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`, 
+            },
+          }
+        );
+        
+        setTotalAvbl(response.data.beetle_coins.coins);
+        
+
+
+
+      } catch (error) {
+        console.error("Error fetching profit/loss data:", error);
+      }
+    };
+
+    fetchProfitLoss();
+  }, []); 
+  
+
   return (
     <div className="flex items-center justify-between p-6 w-full max-w-md">
       <div className="bg-gray-200 rounded-full h-20 w-20 flex items-center justify-center">
@@ -14,7 +49,7 @@ const BeetleBalance = () => {
           Beetle Balance
         </div>
         <div className="text-4xl flex items-center font-extrabold">
-          1000
+         {totalAvbl}
           <div className="flex items-end">
             <div className="text-xl font-medium mt-2 ml-2">/ 100000</div>
           </div>

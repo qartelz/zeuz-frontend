@@ -47,24 +47,22 @@ export default function UserProfile() {
   }, []); 
 
 
-  const [selectedDate, setSelectedDate] = useState(dayjs().date()); // Initialize with today's date
+  const [selectedDate, setSelectedDate] = useState(dayjs().date()); 
   const [currentWeekStart, setCurrentWeekStart] = useState(
     dayjs().startOf("week").add(1, "day")
-  ); // Start at the Monday of the current week
+  ); 
 
   const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
-  // Calculate the dates for the current week based on currentWeekStart
   const weekDates = weekDays.map((_, index) =>
     currentWeekStart.add(index, "day")
   );
 
-  // Function to move to the previous week
+  
   const goToPreviousWeek = () => {
     setCurrentWeekStart(currentWeekStart.subtract(7, "day"));
   };
 
-  // Function to move to the next week
+
   const goToNextWeek = () => {
     setCurrentWeekStart(currentWeekStart.add(7, "day"));
   };

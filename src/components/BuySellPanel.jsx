@@ -7,15 +7,11 @@ import {
 import BeetleBalance from "./BeetleBalance";
 import { useWebSocket } from "./WebSocketComponent";
 
-const BuySellPanel = ({ selectedData }) => {
- 
-
+const BuySellPanel = ({ selectedData, onClose }) => {
   const authDataString = localStorage.getItem("authData");
   const authData = authDataString ? JSON.parse(authDataString) : null;
   const accessToken = authData?.access;
   const user_id = authData?.user_id;
-
-
 
   const { lastPrice } = useWebSocket();
 
@@ -187,14 +183,18 @@ const BuySellPanel = ({ selectedData }) => {
       <div className="flex px-10 text-white text-bold space-x-2">
         <button
           className={`w-full px-2 py-2 rounded-md ${
-            isBuy ? "bg-green-800" : "bg-[#D83232]"
-          } text-white`}
+            isBuy ? "bg-green-800" : "bg-[#D83232]"} text-white`}
           onClick={handleTrade}
         >
           {isBuy ? "Buy" : "Sell"}
         </button>
 
-        <button className="w-full bg-gray-500 py-2 rounded-md">Cancel</button>
+        <button
+          className="w-full bg-gray-500 py-2 rounded-md"
+          onClick={onClose} // Close modal on Cancel button click
+        >
+          Cancel
+        </button>
       </div>
     </div>
   );
