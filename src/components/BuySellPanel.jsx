@@ -8,7 +8,7 @@ import BeetleBalance from "./BeetleBalance";
 import { useWebSocket } from "./WebSocketComponent";
 
 const BuySellPanel = ({ selectedData }) => {
-  const [userId, setUserId] = useState(null);
+ 
 
   const authDataString = localStorage.getItem("authData");
   const authData = authDataString ? JSON.parse(authDataString) : null;

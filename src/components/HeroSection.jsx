@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import BagSvg from "../assets/svg/BagSvg";
 import OverallSvg from "../assets/svg/OverallSvg";
+import OpenOrders from "./OpenOrders";
 
 const HeroSection = ({ username, welcomemsg, question, answers }) => {
   const AssetBox = ({ title, subtitle, Icon, amount, percentage }) => (
@@ -99,71 +100,10 @@ const HeroSection = ({ username, welcomemsg, question, answers }) => {
               </div> */}
 
               <div className="max-w-4xl mx-auto mt-8 p-4">
-                {trades.map((trade, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-4 bg-white rounded-lg  mb-4"
-                  >
-                    {/* Left Side: Stock Name */}
-                    <div className="flex-1 text-lg font-semibold text-gray-700">
-                      {trade.name}
-                    </div>
-
-                    {/* Right Side: Details Horizontally */}
-                    <div className="flex flex-1 justify-between items-center space-x-8">
-                      <div className="text-center">
-                        <div className="text-sm font-medium text-gray-500">
-                          Trade Type
-                        </div>
-                        <div className="text-lg font-semibold text-gray-800">
-                          {trade.type}
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-sm font-medium text-gray-500">
-                          Quantity
-                        </div>
-                        <div className="text-lg font-semibold text-gray-800">
-                          {trade.quantity}
-                        </div>
-                      </div>
-
-                      <div className="text-center">
-                        <div className="text-sm font-medium text-gray-500">
-                          P/L
-                        </div>
-                        <div
-                          className={`text-lg font-semibold ${
-                            trade.pl.startsWith("-")
-                              ? "text-red-500"
-                              : "text-green-500"
-                          }`}
-                        >
-                          {trade.pl}
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-sm font-medium text-gray-500">
-                          Invested
-                        </div>
-                        <div className="text-lg font-semibold text-gray-800">
-                          {trade.invested}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Icon */}
-                    <EllipsisVerticalIcon className="h-6 w-6 text-gray-500 cursor-pointer" />
-                  </div>
-                ))}
+              <OpenOrders />
                 {/* Button to Navigate */}
                 <div className="mt-6 text-right">
-                  <button
-                    onClick={navigateToAllTrades}
-                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700"
-                  >
-                    All Trades <span className="ml-2">»</span>
-                  </button>
+                  
                 </div>
               </div>
             </div>

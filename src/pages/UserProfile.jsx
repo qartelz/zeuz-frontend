@@ -1,10 +1,52 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BagSvg from "../assets/svg/BagSvg";
 import Navbar from "../components/Navbar";
 import dayjs from "dayjs";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import axios from "axios";
+
 
 export default function UserProfile() {
+
+  const authDataString = localStorage.getItem("authData");
+  const authData = authDataString ? JSON.parse(authDataString) : null;
+  const accessToken = authData?.access;
+  const user_id = authData?.user_id;
+
+  const [totalProfitLoss, setTotalProfitLoss] = useState(null); 
+  const [totalAvbl, setTotalAvbl] = useState(null); 
+  const [totalInvested, setTotalInvested] = useState(null); 
+
+
+
+
+  useEffect(() => {
+    
+    const fetchProfitLoss = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8000/account/trade-summary/", 
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`, 
+            },
+          }
+        );
+        setTotalProfitLoss(response.data.total_profit_loss);
+        setTotalAvbl(response.data.beetle_coins.coins);
+        setTotalInvested(response.data.beetle_coins.used_coins);
+
+
+
+      } catch (error) {
+        console.error("Error fetching profit/loss data:", error);
+      }
+    };
+
+    fetchProfitLoss();
+  }, []); 
+
+
   const [selectedDate, setSelectedDate] = useState(dayjs().date()); // Initialize with today's date
   const [currentWeekStart, setCurrentWeekStart] = useState(
     dayjs().startOf("week").add(1, "day")
@@ -28,7 +70,7 @@ export default function UserProfile() {
   };
   const [activeTab, setActiveTab] = useState("Portfolio");
 
-  const InfoBox = ({ title, subtitle, amount, percentage }) => (
+  const InfoBox = ({ title, subtitle, amount }) => (
     <div className="bg-white rounded-lg shadow-md mb-6 px-10 py-3 w-lg max-w-sm">
       <h3 className="text-lg text-[#0E8190] font-semibold mb-2 text-left">
         {title}
@@ -38,15 +80,23 @@ export default function UserProfile() {
         <div className="w-8 h-8 text-white rounded-full flex items-center justify-center mr-4">
           <BagSvg />
         </div>
-        <p className="text-xl font-semibold text-left mr-2">{amount}</p>
-        <p className="text-xl font-semibold text-left">(+{percentage}%)</p>
+        <p className="text-xl font-semibold text-left mr-2">{amount} BTLS.</p>
+       
       </div>
     </div>
+
+    
+
+
+
   );
 
   return (
     <main>
       <Navbar />
+
+    
+
       <div className="flex flex-col items-center p-8  min-h-screen">
         <h1 className="text-xl font-bold text-[#026E78] self-start mb-8">
           My Profile
@@ -103,26 +153,39 @@ export default function UserProfile() {
                 amount="12,345.67"
               />
 
-              {/* Additional Info Boxes */}
+             
               <div className="flex flex-col md:grid grid-cols-3 gap-4">
-                <InfoBox
-                  title="BEETLE"
-                  subtitle="Available"
-                  amount="1,234.56"
-                  percentage="5"
-                />
+              <InfoBox
+  title="BEETLE"
+  subtitle="Available"
+  amount={totalAvbl ? totalAvbl.toFixed(2).toLocaleString() : "Loading..."}
+/>
+
                 <InfoBox
                   title="TOTAL BEETLE"
                   subtitle="Invested"
-                  amount="2,345.78"
+                  amount={totalInvested ? totalInvested.toFixed(2).toLocaleString() : "Loading..."}
                   percentage="5"
                 />
                 <InfoBox
-                  title="BEETLE"
-                  subtitle="P/L"
-                  amount="987.65"
-                  percentage="5"
-                />
+  title="BEETLE"
+  subtitle="P/L"
+  amount={
+    totalProfitLoss ? (
+      <span
+        className={`text-xl font-semibold text-left ${
+          totalProfitLoss < 0 ? "text-red-500" : "text-green-500"
+        }`}
+      >
+        {totalProfitLoss.toFixed(2)}
+      </span>
+    ) : (
+      "Loading..."
+    )
+  }
+  
+/>
+
               </div>
             </div>
           )}
