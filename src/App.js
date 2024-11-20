@@ -10,6 +10,7 @@ import LearnPage from "./pages/LearnPage";
 import AdminLogin from "./pages/AdminLogin";
 import TradesPage from "./pages/TradesPage";
 import { WebSocketProvider } from "./components/WebSocketComponent";
+import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
 
 function App() {
   return (  
@@ -24,15 +25,16 @@ function App() {
       <div className="relative z-20 font-oswald">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<DashboardPage />} />
             <Route path="/login" element={<AuthPage />} />
-            <Route path="/practice" element={<PracticePage />} />
-            <Route path="/my-trades" element={<TradesPage />} />
-            <Route path="/practice/learn" element={<LearnPage />} />
-            <Route path="/my-profile" element={<UserProfile />} />
-            <Route path="/admin/token" element={<AdminPage />} />
             <Route path="/admin" element={<AdminLogin />} />
+            <Route path="/admin/token" element={<AdminPage />} />
 
+            
+            <Route path="/" element={<PrivateRoute element={<DashboardPage />} />} />
+            <Route path="/practice" element={<PrivateRoute element={<PracticePage />} />} />
+            <Route path="/my-trades" element={<PrivateRoute element={<TradesPage />} />} />
+            <Route path="/practice/learn" element={<PrivateRoute element={<LearnPage />} />} />
+            <Route path="/my-profile" element={<PrivateRoute element={<UserProfile />} />} />
           </Routes>
         </BrowserRouter>
       </div>

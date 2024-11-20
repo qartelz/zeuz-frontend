@@ -103,12 +103,13 @@ const OpenOrders = ({ trades, maxTrades }) => {
         <p className="text-center text-gray-500">No Open Positions available.</p>
       )}
       {/* Render Modal */}
-      {modalOpen && (
+      {modalOpen && selectedTrade && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-md shadow-lg">
             <BuySellPanel
               selectedData={selectedTrade}
-              onClose={() => setModalOpen(false)} // Pass close handler
+              onClose={() => setModalOpen(false)}
+              initialIsBuy={selectedTrade.trade_type === "Buy"} // Use selectedTrade to determine initialIsBuy
             />
           </div>
         </div>

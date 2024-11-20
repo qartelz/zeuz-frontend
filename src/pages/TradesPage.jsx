@@ -55,7 +55,7 @@ const TradesPage = () => {
   return (
     <>
       <Navbar />
-      <div className="max-w-5xl mx-auto mt-8 p-4">
+      <div className="max-w-5xl mx-auto mt-8 p-4 min-h-screen">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">
           Open Positions.
         </h1>

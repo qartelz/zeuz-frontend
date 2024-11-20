@@ -7,7 +7,7 @@ import {
 import BeetleBalance from "./BeetleBalance";
 import { useWebSocket } from "./WebSocketComponent";
 
-const BuySellPanel = ({ selectedData, onClose }) => {
+const BuySellPanel = ({ selectedData, onClose,initialIsBuy, }) => {
   const authDataString = localStorage.getItem("authData");
   const authData = authDataString ? JSON.parse(authDataString) : null;
   const accessToken = authData?.access;
@@ -18,7 +18,7 @@ const BuySellPanel = ({ selectedData, onClose }) => {
   const [selectedOrderType, setSelectedOrderType] = useState("Market Order");
   const [isOrderDropdownOpen, setIsOrderDropdownOpen] = useState(false);
 
-  const [isBuy, setIsBuy] = useState(true);
+  const [isBuy, setIsBuy] = useState(initialIsBuy);
   const [quantity, setQuantity] = useState(selectedData?.lot_size || 0);
   const [beetleCoins, setBeetleCoins] = useState(null);
 
@@ -191,7 +191,7 @@ const BuySellPanel = ({ selectedData, onClose }) => {
 
         <button
           className="w-full bg-gray-500 py-2 rounded-md"
-          onClick={onClose} // Close modal on Cancel button click
+          onClick={onClose} 
         >
           Cancel
         </button>

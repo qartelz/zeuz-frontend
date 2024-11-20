@@ -4,8 +4,13 @@ import { login } from "../redux/authSlice";
 import { useNavigate } from "react-router-dom";
 import { FaEnvelope, FaLock, FaPhone, FaEye, FaEyeSlash } from "react-icons/fa";
 import AuthSvg from "../assets/svg/AuthSvg";
+import { useLocation } from "react-router-dom";
 
 const AuthPage = () => {
+  const location = useLocation();
+  const message = location.state?.message;
+
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
@@ -36,8 +41,9 @@ const AuthPage = () => {
   };
 
   return (
+    
     <div className="flex h-screen bg-gray-100 font-poppins">
-      {/* Left Side */}
+      
       <div className="flex flex-col -translate-y-24 sm:translate-y-0 justify-center items-center sm:w-1/2">
         {/* Login/Sign Up Toggle */}
         <div className="flex text-3xl sm:text-5xl font-bold space-x-4 mb-12">
@@ -113,6 +119,7 @@ const AuthPage = () => {
               >
                 Login
               </button>
+              {message && <div className="alert alert-warning text-red-500 text-sm mt-2">{message}</div>} 
 
               {error && (
           <p className="text-red-500 text-sm mt-2">

@@ -16,6 +16,7 @@ export default function UserProfile() {
   const [totalProfitLoss, setTotalProfitLoss] = useState(null); 
   const [totalAvbl, setTotalAvbl] = useState(null); 
   const [totalInvested, setTotalInvested] = useState(null); 
+  console.log(totalInvested, "setTotalInvested");
 
 
 
@@ -162,7 +163,7 @@ export default function UserProfile() {
                 <InfoBox
                   title="TOTAL BEETLE"
                   subtitle="Invested"
-                  amount={totalInvested ? totalInvested.toFixed(2).toLocaleString() : "Loading..."}
+                  amount={ totalInvested}
                   percentage="5"
                 />
                 <InfoBox
@@ -178,7 +179,7 @@ export default function UserProfile() {
         {totalProfitLoss.toFixed(2)}
       </span>
     ) : (
-      "Loading..."
+      "0"
     )
   }
   

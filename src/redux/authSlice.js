@@ -42,7 +42,7 @@ const authSlice = createSlice({
       state.email = null;
       state.error = null;
 
-      // Clear auth data from localStorage
+      
       localStorage.removeItem("authData");
     },
   },
