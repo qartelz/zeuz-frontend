@@ -2,20 +2,20 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 
-const OpenOrders = ({ maxTrades }) => {
+const ClosedOrders = ({ maxTrades }) => {
   const [expandedTradeIndex, setExpandedTradeIndex] = useState(null);
   const toggleExpand = (index) => {
     setExpandedTradeIndex(index === expandedTradeIndex ? null : index);
   };
 
-  const [trades, setTrades] = useState([]); // State to store trades
+  const [trades, setTrades] = useState([]);
 
   const authDataString = localStorage.getItem("authData");
   const authData = authDataString ? JSON.parse(authDataString) : null;
   const accessToken = authData?.access;
 
   useEffect(() => {
-    const fetchOpenOrders = async () => {
+    const fetchClosedOrders = async () => {
       try {
         const response = await axios.get(
           "http://127.0.0.1:8000/trades/trades/",
@@ -29,7 +29,7 @@ const OpenOrders = ({ maxTrades }) => {
         if (response.data && Array.isArray(response.data)) {
           
           const completedTrades = response.data.filter(
-            (trade) => trade.trade_status === "incomplete"
+            (trade) => trade.trade_status === "complete"
           );
           setTrades(completedTrades);
         } else {
@@ -40,7 +40,7 @@ const OpenOrders = ({ maxTrades }) => {
       }
     };
 
-    fetchOpenOrders();
+    fetchClosedOrders();
   }, [accessToken]);
 
   const displayedTrades = maxTrades ? trades.slice(0, maxTrades) : trades;
@@ -117,10 +117,10 @@ const OpenOrders = ({ maxTrades }) => {
           </div>
         ))
       ) : (
-        <p className="text-center text-gray-500">No Open Positions available.</p>
+        <p className="text-center text-gray-500">No Closed Positions available.</p>
       )}
     </div>
   );
 };
 
-export default OpenOrders;
+export default ClosedOrders;

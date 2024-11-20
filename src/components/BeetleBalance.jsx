@@ -16,7 +16,7 @@ const BeetleBalance = () => {
         <div className="text-4xl flex items-center font-extrabold">
           1000
           <div className="flex items-end">
-            <div className="text-xl font-medium mt-2 ml-2">/ 5000</div>
+            <div className="text-xl font-medium mt-2 ml-2">/ 100000</div>
           </div>
           <div className="flex items-center">
             <PlusIcon className="h-6 w-6 text-blue-500 ml-2" />

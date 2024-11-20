@@ -27,18 +27,6 @@ const HeroSection = ({ username, welcomemsg, question, answers }) => {
 
   const navigate = useNavigate();
 
-  const trades = [
-    { name: "AAPL", quantity: 10, pl: "+$200", invested: "$1000", type: "Buy" },
-    { name: "MSFT", quantity: 5, pl: "-$50", invested: "$750", type: "Sell" },
-    { name: "GOOG", quantity: 8, pl: "+$320", invested: "$1200", type: "Buy" },
-    {
-      name: "AMZN",
-      quantity: 12,
-      pl: "+$500",
-      invested: "$3000",
-      type: "Sell",
-    },
-  ];
 
   const navigateToAllTrades = () => {
     navigate("/my-trades");
@@ -100,7 +88,15 @@ const HeroSection = ({ username, welcomemsg, question, answers }) => {
               </div> */}
 
               <div className="max-w-4xl mx-auto mt-8 p-4">
-              <OpenOrders />
+              <OpenOrders maxTrades={4} />
+              <div className="mt-6 text-right">
+          <button
+          onClick={navigateToAllTrades}
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700"
+          >
+            All Trades <span className="ml-2">»</span>
+          </button>
+        </div>
                 {/* Button to Navigate */}
                 <div className="mt-6 text-right">
                   
