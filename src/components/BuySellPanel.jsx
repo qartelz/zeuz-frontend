@@ -19,6 +19,7 @@ const BuySellPanel = ({ selectedData, onClose,initialIsBuy, }) => {
   const [isOrderDropdownOpen, setIsOrderDropdownOpen] = useState(false);
 
   const [isBuy, setIsBuy] = useState(initialIsBuy);
+  console.log(initialIsBuy)
   const [quantity, setQuantity] = useState(selectedData?.lot_size || 0);
   const [beetleCoins, setBeetleCoins] = useState(null);
 
@@ -67,6 +68,7 @@ const BuySellPanel = ({ selectedData, onClose,initialIsBuy, }) => {
       invested_coin: (lastPrice || 0) * quantity,
       trade_status: "incomplete",
       ticker: selectedData.ticker || "",
+      "margin_required":4159.25,
     };
     console.log(tradeData);
     try {

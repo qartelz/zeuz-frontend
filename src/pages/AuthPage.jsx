@@ -10,13 +10,13 @@ const AuthPage = () => {
   const location = useLocation();
   const message = location.state?.message;
 
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const { access, user_id, name, refresh, error } = useSelector(
     (state) => state.auth
@@ -24,7 +24,10 @@ const AuthPage = () => {
 
   useEffect(() => {
     if (access) {
-      navigate("/");
+      setSuccessMessage("Login Successful! Taking you to Dashboard...");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000); 
     }
   }, [access, navigate]);
 
@@ -33,19 +36,13 @@ const AuthPage = () => {
   };
 
   const handleLogin = () => {
-    
-    
-
     // Dispatch the login action
     dispatch(login({ email, password }));
   };
 
   return (
-    
     <div className="flex h-screen bg-gray-100 font-poppins">
-      
       <div className="flex flex-col -translate-y-24 sm:translate-y-0 justify-center items-center sm:w-1/2">
-        {/* Login/Sign Up Toggle */}
         <div className="flex text-3xl sm:text-5xl font-bold space-x-4 mb-12">
           <button
             onClick={() => setIsLogin(true)}
@@ -70,7 +67,6 @@ const AuthPage = () => {
         </div>
 
         <div className="flex flex-col min-h-[300px]">
-          {/* Login Form */}
           {isLogin ? (
             <div className="flex flex-col space-y-4 px-4">
               <div className="flex items-center bg-white border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4">
@@ -84,9 +80,7 @@ const AuthPage = () => {
                 />
               </div>
 
-              <div
-                className={`flex items-center bg-white border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4`}
-              >
+              <div className="flex items-center bg-white border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4">
                 <FaLock className="text-[#248C9A] mr-2" />
                 <input
                   type={isPasswordVisible ? "text" : "password"}
@@ -119,16 +113,23 @@ const AuthPage = () => {
               >
                 Login
               </button>
-              {message && <div className="alert alert-warning text-red-500 text-sm mt-2">{message}</div>} 
-
+              {message && (
+                <div className="alert alert-warning text-red-500 text-sm mt-2">
+                  {message}
+                </div>
+              )}
               {error && (
-          <p className="text-red-500 text-sm mt-2">
-            {typeof error === "string" ? error : "An error occurred. Please try again."}
-          </p>
-        )}
+                <p className="text-red-500 text-sm mt-2">
+                  {typeof error === "string"
+                    ? error
+                    : "An error occurred. Please try again."}
+                </p>
+              )}
+              {successMessage && (
+                <p className="text-green-500 text-sm mt-2">{successMessage}</p>
+              )}
             </div>
           ) : (
-            // Sign Up Form
             <div className="flex flex-col space-y-4 px-4">
               <div className="flex bg-white items-center border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4">
                 <FaEnvelope className="text-[#248C9A] mr-2" />
@@ -138,10 +139,7 @@ const AuthPage = () => {
                   className="flex-1 outline-none"
                 />
               </div>
-
-              <div
-                className={`flex items-center bg-white border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4`}
-              >
+              <div className="flex items-center bg-white border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4">
                 <FaLock className="text-[#248C9A] mr-2" />
                 <input
                   type={isPasswordVisible ? "text" : "password"}
@@ -159,7 +157,6 @@ const AuthPage = () => {
                   )}
                 </button>
               </div>
-
               <div className="flex bg-white items-center border w-[400px] rounded-[15px] sm:rounded-[50px] py-4 sm:py-2 px-4">
                 <FaPhone className="text-[#248C9A] mr-2" />
                 <input
@@ -168,7 +165,6 @@ const AuthPage = () => {
                   className="flex-1 outline-none"
                 />
               </div>
-
               <button className="bg-[#248C9A] font-bold text-white py-2 rounded-lg hover:bg-[#1c6e7a] transition-colors duration-200">
                 Create Account
               </button>
@@ -176,8 +172,6 @@ const AuthPage = () => {
           )}
         </div>
       </div>
-
-      {/* Right Side */}
       <div className="hidden sm:flex">
         <AuthSvg className="sm:absolute bottom-0 right-0 max-w-full h-[80vh] overflow-hidden" />
       </div>

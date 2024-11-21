@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import BuySellPanel from "./BuySellPanel"; // Import your modal component
+import { useWebSocket } from "./WebSocketComponent";
 
 const OpenOrders = ({ trades, maxTrades }) => {
+
+  const { lastPrice } = useWebSocket();
+  console.log(lastPrice,"trade ltp")
   const [expandedTradeIndex, setExpandedTradeIndex] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedTrade, setSelectedTrade] = useState(null);
@@ -40,6 +44,7 @@ const OpenOrders = ({ trades, maxTrades }) => {
                   </div>
                   <div className="text-lg font-semibold text-gray-800">
                     {trade.trade_type}
+                    {/* console.log(  trade.trade_type,"trade_type") */}
                   </div>
                 </div>
                 <div className="text-center">
@@ -53,13 +58,9 @@ const OpenOrders = ({ trades, maxTrades }) => {
                 <div className="text-center">
                   <div className="text-sm font-medium text-gray-500">P/L</div>
                   <div
-                    className={`text-lg font-semibold ${
-                      trade.pl && trade.pl.startsWith("-")
-                        ? "text-red-500"
-                        : "text-green-500"
-                    }`}
+                    className
                   >
-                    {trade.pl || "N/A"}
+                    {lastPrice}
                   </div>
                 </div>
                 <div className="text-center">

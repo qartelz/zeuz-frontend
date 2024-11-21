@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar'
 import HeroSection from '../components/HeroSection'
 import { useSelector } from 'react-redux';
 import axios from 'axios';
+import { WebSocketProvider } from '../components/WebSocketComponent';
 
 
 
@@ -59,6 +60,8 @@ const DashboardPage = () => {
   
   return (
     <div >
+     
+    
         <Navbar/>
         <HeroSection 
         trades={trades}

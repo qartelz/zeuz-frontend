@@ -4,6 +4,7 @@ import Navbar from "../components/Navbar";
 import ClosedOrders from "../components/ClosedOrders";
 import OpenOrders from "../components/OpenOrders";
 import axios from "axios";
+import { WebSocketProvider } from "../components/WebSocketComponent";
 
 const TradesPage = () => {
 
@@ -34,6 +35,7 @@ const TradesPage = () => {
 
 
         if (response.data && Array.isArray(response.data)) {
+          console.log(response.data,"response")
           
           const completedTrades = response.data.filter(
             (trade) => trade.trade_status === "incomplete"
@@ -54,13 +56,15 @@ const TradesPage = () => {
 
   return (
     <>
+
+<WebSocketProvider selectedData={trades}>
       <Navbar />
       <div className="max-w-5xl mx-auto mt-8 p-4 min-h-screen">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">
           Open Positions.
         </h1>
 
-        <OpenOrders trades={trades}/>
+        <OpenOrders  trades={trades}/>
 
         <section>
           <h2 className="text-2xl font-bold text-gray-800 mb-6">
@@ -69,6 +73,8 @@ const TradesPage = () => {
           <ClosedOrders />
         </section>
       </div>
+
+      </WebSocketProvider>
     </>
   );
 };

@@ -13,9 +13,6 @@ const HeroSection = ({ username, welcomemsg, question, answers, trades }) => {
 
   const navigate = useNavigate();
 
-  const handleNavigation = () => {
-    navigate('/practice');
-  };
   const authDataString = localStorage.getItem("authData");
   const authData = authDataString ? JSON.parse(authDataString) : null;
   const accessToken = authData?.access;
@@ -55,6 +52,10 @@ const HeroSection = ({ username, welcomemsg, question, answers, trades }) => {
     navigate("/my-trades");
   };
 
+  const navigateToPractice = () => {
+    navigate("/practice");
+  };
+
   return (
     <div className="p-6">
       <div className="rounded-lg border border-gray-300 bg-[#DFF9FD] mx-auto sm:max-w-4xl shadow-md sm:flex relative">
@@ -71,7 +72,7 @@ const HeroSection = ({ username, welcomemsg, question, answers, trades }) => {
 
             {trades.length < 0 && (
               <button
-              onClick={handleNavigation}
+              onClick={navigateToPractice}
               className="mt-4 px-6 py-2 bg-black text-white rounded-lg font-semibold transition-transform duration-400 hover:scale-105"
             >
               Start a New Trade
@@ -119,11 +120,13 @@ const HeroSection = ({ username, welcomemsg, question, answers, trades }) => {
                     </span>
                     Yet!
                   </p>
-                  <a href="/practice">
-                    <button className="mt-4 px-6 py-2 bg-black text-white rounded-lg font-semibold transition-transform duration-400 hover:scale-105">
+                 
+                    <button
+                    onClick={navigateToPractice}
+                     className="mt-4 px-6 py-2 bg-black text-white rounded-lg font-semibold transition-transform duration-400 hover:scale-105">
                       Start a New Trade
                     </button>
-                  </a>
+                
                 </div>
               )}
             </div>
