@@ -8,7 +8,7 @@ import StockInfo from "../components/StockInfo";
 import BuySellPanel from "../components/BuySellPanel";
 import BeetleBalance from "../components/BeetleBalance";
 import OptionChain from "../components/OptionChain";
-import { WebSocketProvider } from "../components/WebSocketComponent";
+import { WebSocketStock } from "../components/WebSocketStock";
 
 const LearnPage = () => {
   const [chartData, setChartData] = useState([]);
@@ -187,7 +187,7 @@ const LearnPage = () => {
       </div>
 
       {selectedData && !searchQuery && heading !== "Options Trading" && (
-        <WebSocketProvider selectedData={selectedData}>
+        <WebSocketStock selectedData={selectedData}>
           <div className="grid grid-cols-1 md:grid-cols-[70%_30%] gap-6 p-6">
             <div className="space-y-6">
               <StockInfo
@@ -202,7 +202,7 @@ const LearnPage = () => {
               <BuySellPanel selectedData={selectedData} />
             </div>
           </div>
-        </WebSocketProvider>
+        </WebSocketStock>
       )}
 
       {heading === "Options Trading" && (

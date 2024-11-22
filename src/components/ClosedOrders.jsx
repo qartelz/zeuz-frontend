@@ -1,54 +1,47 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+// ClosedOrders.js
+import React, { useState } from "react";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+// import BuySellPanel from "./BuySellPanel";
+import { useWebSocketTrade } from "./WebSocketTrade";
 
-const ClosedOrders = ({ maxTrades }) => {
+const ClosedOrders = ({ trades }) => {
+  const closedTrades = trades.filter((trade) => trade.trade_status === "completed");
+  const { prices } = useWebSocketTrade();
   const [expandedTradeIndex, setExpandedTradeIndex] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedTrade, setSelectedTrade] = useState(null);
+
   const toggleExpand = (index) => {
     setExpandedTradeIndex(index === expandedTradeIndex ? null : index);
   };
 
-  const [trades, setTrades] = useState([]);
+  
 
-  const authDataString = localStorage.getItem("authData");
-  const authData = authDataString ? JSON.parse(authDataString) : null;
-  const accessToken = authData?.access;
+  const handleOpenModal = (trade) => {
+    setSelectedTrade(trade); // Pass the selected trade to the modal
+    setModalOpen(true); // Open the modal
+  };
 
-  useEffect(() => {
-    const fetchClosedOrders = async () => {
-      try {
-        const response = await axios.get(
-          "http://127.0.0.1:8000/trades/trades/",
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-
-        if (response.data && Array.isArray(response.data)) {
-          
-          const completedTrades = response.data.filter(
-            (trade) => trade.trade_status === "complete"
-          );
-          setTrades(completedTrades);
-        } else {
-          console.error("Unexpected response format:", response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching open orders data:", error);
-      }
-    };
-
-    fetchClosedOrders();
-  }, [accessToken]);
-
-  const displayedTrades = maxTrades ? trades.slice(0, maxTrades) : trades;
+  // Function to calculate P/L
+  const calculatePL = (trade) => {
+    const tradePrice = parseFloat(trade.avg_price); // Assuming 'price' is the trade price
+    const quantity = parseFloat(trade.quantity);
+    const currentPrice = prices[trade.token_id] || 0; // Get current price for the trade's token_id
+    if (trade.trade_type === "Buy") {
+      return ((currentPrice - tradePrice) * quantity).toFixed(2);
+    } else if (trade.trade_type === "Sell") {
+      return ((tradePrice - currentPrice) * quantity).toFixed(2);
+    }
+    return "0.00";
+  };
 
   return (
-    <div className="max-w-4xl mx-auto mt-8 p-4">
-      {displayedTrades.length > 0 ? (
-        displayedTrades.map((trade, index) => (
+
+    <>
+    
+    <div className="max-w-5xl mx-auto mt-8 p-4">
+      {closedTrades.length > 0 ? (
+        trades.map((trade, index) => (
           <div
             key={index}
             className="bg-white rounded-lg mb-4 shadow transition-all duration-300"
@@ -71,6 +64,14 @@ const ClosedOrders = ({ maxTrades }) => {
                 </div>
                 <div className="text-center">
                   <div className="text-sm font-medium text-gray-500">
+                    Avg. Price
+                  </div>
+                  <div className="text-lg font-semibold text-gray-800">
+                    {trade.avg_price}
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="text-sm font-medium text-gray-500">
                     Quantity
                   </div>
                   <div className="text-lg font-semibold text-gray-800">
@@ -81,12 +82,12 @@ const ClosedOrders = ({ maxTrades }) => {
                   <div className="text-sm font-medium text-gray-500">P/L</div>
                   <div
                     className={`text-lg font-semibold ${
-                      trade.pl && trade.pl.startsWith("-")
-                        ? "text-red-500"
-                        : "text-green-500"
+                      calculatePL(trade) >= 0
+                        ? "text-green-600"
+                        : "text-red-600"
                     }`}
                   >
-                    {trade.pl || "N/A"}
+                    {calculatePL(trade)}
                   </div>
                 </div>
                 <div className="text-center">
@@ -103,24 +104,44 @@ const ClosedOrders = ({ maxTrades }) => {
             <div
               className={`overflow-hidden ${
                 expandedTradeIndex === index ? "max-h-96" : "max-h-0"
-              }`}
+              } transition-max-height duration-300`}
             >
               <div className="p-4 bg-gray-100">
                 <p className="text-gray-700">
-                  <strong>Details:</strong> {trade.details || "No details available."}
+                  <strong>Details:</strong>{" "}
+                  {trade.details || "No details available."}
                 </p>
                 <p className="text-gray-500 mt-2">
                   <strong>Created On:</strong> {trade.created_at}
                 </p>
+                
               </div>
             </div>
           </div>
         ))
       ) : (
-        <p className="text-center text-gray-500">No Closed Positions available.</p>
+        <p className="text-center text-gray-500">
+          No Closed Positions available.
+        </p>
       )}
+     
+      {/* {modalOpen && selectedTrade && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-md shadow-lg">
+            <BuySellPanel
+              selectedData={selectedTrade}
+              onClose={() => setModalOpen(false)}
+              initialIsBuy={selectedTrade.trade_type === "Buy"} // Use selectedTrade to determine initialIsBuy
+            />
+          </div>
+        </div>
+      )} */}
     </div>
+
+
+
+    </>
   );
 };
 
-export default ClosedOrders;
+export default ClosedOrders; 

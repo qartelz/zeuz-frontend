@@ -1,8 +1,8 @@
 import React from "react";
-import { useWebSocket } from "./WebSocketComponent";
+import { useWebSocketStock } from "./WebSocketStock.jsx";
 
 const StockInfo = ({ selectedData }) => {
-  const { lastPrice, volume, percentChange } = useWebSocket();
+  const { lastPrice, volume, percentChange } = useWebSocketStock();
 
   const data = [
     { value: `${percentChange}%`, label: "24h Change" },

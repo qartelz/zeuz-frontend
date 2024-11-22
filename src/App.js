@@ -9,12 +9,19 @@ import AdminPage from "./pages/AdminPage";
 import LearnPage from "./pages/LearnPage";
 import AdminLogin from "./pages/AdminLogin";
 import TradesPage from "./pages/TradesPage";
-import { WebSocketProvider } from "./components/WebSocketComponent";
-import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
+
+
+import PrivateRoute from "./components/PrivateRoute"; 
+import { WebSocketStock } from "./components/WebSocketStock";
+import { WebSocketTrade } from "./components/WebSocketTrade";
 
 function App() {
   return (  
-    <WebSocketProvider>
+   
+
+    <WebSocketStock>
+      <WebSocketTrade>
+      
     <div className="relative overflow-hidden bg-slate-50">
       <div className="absolute inset-0 z-0"></div>
 
@@ -27,19 +34,20 @@ function App() {
           <Routes>
             <Route path="/login" element={<AuthPage />} />
             <Route path="/admin" element={<AdminLogin />} />
-            <Route path="/admin/token" element={<AdminPage />} />
-
-            
-            <Route path="/" element={<PrivateRoute element={<DashboardPage />} />} />
-            <Route path="/practice" element={<PrivateRoute element={<PracticePage />} />} />
-            <Route path="/my-trades" element={<PrivateRoute element={<TradesPage />} />} />
+            <Route path="/admin/token" element={<AdminPage />} />       
+            <Route path="/" element={<PrivateRoute element={<DashboardPage />} />} />   
+            <Route path="/practice" element={<PrivateRoute element={<PracticePage />} />} />        
             <Route path="/practice/learn" element={<PrivateRoute element={<LearnPage />} />} />
+            <Route path="/my-trades" element={<PrivateRoute element={<TradesPage />} />} />
             <Route path="/my-profile" element={<PrivateRoute element={<UserProfile />} />} />
           </Routes>
         </BrowserRouter>
       </div>
     </div>
-    </WebSocketProvider>
+    </WebSocketTrade>
+    </WebSocketStock>
+    
+   
   );
 }
 

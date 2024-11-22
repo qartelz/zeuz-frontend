@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-const WebSocketContext = createContext(null);
+const WebSocketStockContext = createContext(null);
 
-export const WebSocketProvider = ({ children, selectedData }) => {
+export const WebSocketStock = ({ children, selectedData }) => {
   const [lastPrice, setLastPrice] = useState(selectedData?.strike_price || "0.00");
   const [volume, setVolume] = useState("0.00");
   const [percentChange, setPercentChange] = useState("0.00");
@@ -21,7 +21,7 @@ export const WebSocketProvider = ({ children, selectedData }) => {
         t: "c",
         uid: "KE0070",
         actid: "KE0070",
-        susertoken:"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIiwiaWF0IjoxNzMyMTY5NzYxLCJleHAiOjE3MzIyNTUyMDAsInN1YmplY3RfaWQiOiJLRTAwNzAiLCJwYXJ0bmVyX2NoYW5uZWwiOiJBUEkiLCJwYXJ0bmVyX2NvZGUiOiJLRTAwNzAiLCJ1c2VyX2lkIjoiS0UwMDcwIiwibGFzdF92YWxpZGF0ZWRfZGF0ZV90aW1lIjoxNzMyMTY5NzYxMTc3LCJpc3N1ZXJfaWQiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIn0.3ISmRNUH9m2X1QtLmJQ1ep2UEgOTeqVovwGgcwoLZGw",
+        susertoken:"eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIiwiaWF0IjoxNzMyMjIxODU4LCJleHAiOjE3MzIyNTUyMDAsInN1YmplY3RfaWQiOiJLRTAwNzAiLCJwYXJ0bmVyX2NoYW5uZWwiOiJBUEkiLCJwYXJ0bmVyX2NvZGUiOiJLRTAwNzAiLCJ1c2VyX2lkIjoiS0UwMDcwIiwibGFzdF92YWxpZGF0ZWRfZGF0ZV90aW1lIjoxNzMyMjIxODU4Njk4LCJpc3N1ZXJfaWQiOiJodHRwczovL3Nzby5lbnJpY2htb25leS5pbi9vcmcvaXNzdWVyIn0.xuLhdaYXg8_ICB5wR3o_z8FY0N_5V1xFXlBq54uWyyw",
         source: "API",
       };
 
@@ -41,7 +41,9 @@ export const WebSocketProvider = ({ children, selectedData }) => {
         console.error("Error parsing WebSocket message:", error);
       }
       heartbeatTimer = setInterval(() => {
-        ws.send(JSON.stringify({ t: 'h' }));
+        const heartbeatMessage = { t: "h" };
+        console.log("Sending heartbeat message:", heartbeatMessage);
+        ws.send(JSON.stringify(heartbeatMessage));
       }, heartbeatInterval);
 
       touchlineTimer = setInterval(() => {
@@ -65,15 +67,15 @@ export const WebSocketProvider = ({ children, selectedData }) => {
     return () => {
       ws.close();
     };
-  }, []);
+  }, [selectedData]);
 
   return (
-    <WebSocketContext.Provider
+    <WebSocketStockContext.Provider
       value={{ lastPrice, volume, percentChange }}
     >
       {children}
-    </WebSocketContext.Provider>
+    </WebSocketStockContext.Provider>
   );
 };
 
-export const useWebSocket = () => useContext(WebSocketContext);
+export const useWebSocketStock = () => useContext(WebSocketStockContext);

@@ -183,10 +183,16 @@ const HeroSection = ({ username, welcomemsg, question, answers, trades }) => {
   <OverallSvg />
 </div>
 <p 
-  className={`text-lg font-bold text-left mr-2 ${totalProfitLoss > 0 ? 'text-green-500' : 'text-red-500'}`}
+  className={`text-lg font-bold text-left mr-2 ${totalProfitLoss >= 0 ? 'text-green-500' : 'text-red-600'}`}
 >
-  {totalProfitLoss} BTLS.
+  {totalProfitLoss < 0 ? Math.abs(totalProfitLoss) : totalProfitLoss} BTLS.
 </p>
+{totalProfitLoss > 0 ? (
+  <p className="text-green-500">Profit</p>
+) : totalProfitLoss < 0 ? (
+  <p className="text-red-600">Loss</p>
+) : null}
+  
 </div>
                     
                 

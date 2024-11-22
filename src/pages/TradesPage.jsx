@@ -4,22 +4,19 @@ import Navbar from "../components/Navbar";
 import ClosedOrders from "../components/ClosedOrders";
 import OpenOrders from "../components/OpenOrders";
 import axios from "axios";
-import { WebSocketProvider } from "../components/WebSocketComponent";
+import { WebSocketTrade } from "../components/WebSocketTrade";
 
 const TradesPage = () => {
-
+  const [activeTab, setActiveTab] = useState("Open Positions");
   const [trades, setTrades] = useState([]);
+  console.log(setTrades,"trades ")
 
   const authDataString = localStorage.getItem("authData");
   const authData = authDataString ? JSON.parse(authDataString) : null;
   const accessToken = authData?.access;
 
-
-  
-
-
   useEffect(() => {
-    const fetchOpenOrders = async () => {
+    const fetchTrades = async () => {
       try {
         const response = await axios.get(
           "http://127.0.0.1:8000/trades/trades/",
@@ -30,51 +27,65 @@ const TradesPage = () => {
           }
         );
 
-         
-
-
-
         if (response.data && Array.isArray(response.data)) {
-          console.log(response.data,"response")
-          
-          const completedTrades = response.data.filter(
-            (trade) => trade.trade_status === "incomplete"
-          );
-          setTrades(completedTrades);
+          setTrades(response.data);
         } else {
           console.error("Unexpected response format:", response.data);
         }
       } catch (error) {
-        console.error("Error fetching open orders data:", error);
+        console.error("Error fetching trades:", error);
       }
     };
 
-    fetchOpenOrders();
+    fetchTrades();
   }, [accessToken]);
-
-
 
   return (
     <>
+      <WebSocketTrade trades={trades}>
+        <Navbar />
 
-<WebSocketProvider selectedData={trades}>
-      <Navbar />
-      <div className="max-w-5xl mx-auto mt-8 p-4 min-h-screen">
-        <h1 className="text-2xl font-bold text-gray-800 mb-6">
-          Open Positions.
-        </h1>
+        <div className="max-w-5xl mx-auto mt-8 p-4 min-h-screen">
+          <div className="flex items-center w-fit justify-start border rounded-full px-2 py-1 mb-8">
+            <button
+              className={`px-4 py-2 rounded-full ${
+                activeTab === "Open Positions"
+                  ? "bg-[#026E78] text-white"
+                  : "text-gray-600"
+              }`}
+              onClick={() => setActiveTab("Open Positions")}
+            >
+              Open Positions
+            </button>
+            <button
+              className={`px-4 py-2 rounded-full ${
+                activeTab === "Closed Positions"
+                  ? "bg-[#026E78] text-white"
+                  : "text-gray-600"
+              }`}
+              onClick={() => setActiveTab("Closed Positions")}
+            >
+              Closed Positions
+            </button>
+          </div>
 
-        <OpenOrders  trades={trades}/>
+          {activeTab === "Open Positions" && (
+           
+              
+              <OpenOrders trades={trades} />
+           
+          )}
 
-        <section>
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            Closed Positions.
-          </h2>
-          <ClosedOrders />
-        </section>
-      </div>
-
-      </WebSocketProvider>
+          {activeTab === "Closed Positions" && (
+             
+              
+             <ClosedOrders trades={trades} />
+          
+           )}
+           
+          
+        </div>
+      </WebSocketTrade>
     </>
   );
 };

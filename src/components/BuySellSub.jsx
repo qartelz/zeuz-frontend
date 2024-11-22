@@ -7,20 +7,20 @@ import {
 import BeetleBalance from "./BeetleBalance";
 import { useWebSocketStock } from "./WebSocketStock";
 
-const BuySellPanel = ({ selectedData, onClose,initialIsBuy, }) => {
+const BuySellSub = ({ selectedData, onClose,initialIsBuy, currentPrice }) => {
   
   const authDataString = localStorage.getItem("authData");
   const authData = authDataString ? JSON.parse(authDataString) : null;
   const accessToken = authData?.access;
   const user_id = authData?.user_id;
 
-  const { lastPrice } = useWebSocketStock();
+//   const { lastPrice } = useWebSocketStock();
 
   const [selectedOrderType, setSelectedOrderType] = useState("Market Order");
   const [isOrderDropdownOpen, setIsOrderDropdownOpen] = useState(false);
 
   const [isBuy, setIsBuy] = useState(initialIsBuy);
-  console.log(initialIsBuy)
+  
   const [quantity, setQuantity] = useState(selectedData?.lot_size || 0);
   const [beetleCoins, setBeetleCoins] = useState(null);
 
@@ -64,9 +64,10 @@ const BuySellPanel = ({ selectedData, onClose,initialIsBuy, }) => {
       segment: selectedData.segment || "EQUITY",
       option_type: selectedData.option_type || null,
       trade_type: isBuy ? "Buy" : "Sell",
-      avg_price: lastPrice || 0,
+      avg_price: currentPrice || 0,
+      invested_coin: (currentPrice || 0) * quantity,
       prctype: selectedOrderType === "Market Order" ? "MKT" : "LMT",
-      invested_coin: (lastPrice || 0) * quantity,
+      
       trade_status: "incomplete",
       ticker: selectedData.ticker || "",
       "margin_required":4159.25,
@@ -164,12 +165,12 @@ const BuySellPanel = ({ selectedData, onClose,initialIsBuy, }) => {
             Price. (BTLS)
           </label>
           <input
-            type="number"
-            id="lastPrice"
-            value={lastPrice}
-            className="w-full p-2 text-[#7D7D7D] mt-4 border bg-white rounded-md"
-            readOnly
-          />
+      type="number"
+      id="lastPrice"
+      value={currentPrice}
+      className="w-full p-2 text-[#7D7D7D] mt-4 border bg-white rounded-md"
+      readOnly
+    />
         </div>
 
         <div className="relative">
@@ -203,4 +204,4 @@ const BuySellPanel = ({ selectedData, onClose,initialIsBuy, }) => {
   );
 };
 
-export default BuySellPanel;
+export default BuySellSub;
